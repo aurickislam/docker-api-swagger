@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  docker-api-swagger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: docker-api-swagger
+    container_name: docker-api-swagger
+    restart: always
+    ports:
+      - "8083:80"
