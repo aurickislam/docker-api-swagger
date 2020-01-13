@@ -2,6 +2,21 @@ const express = require('express'),
 	app = express(),
 	request = require('request');
 
+let DOCKER_SERVER = 'docker',
+	DOCKER_PORT = 2375;
+
+if (process.env.DOCKER_SERVER && process.env.DOCKER_SERVER != '')
+	DOCKER_SERVER = process.env.DOCKER_SERVER;
+
+if (process.env.DOCKER_PORT && process.env.DOCKER_PORT != '')
+	DOCKER_PORT = process.env.DOCKER_PORT;
+
+const DOCKER_API_URL = `http://${DOCKER_SERVER}:${DOCKER_PORT}`;
+
+console.log("@DOCKER_SERVER: ", DOCKER_SERVER);
+console.log("@DOCKER_PORT: ", DOCKER_PORT);
+console.log("@DOCKER_API_URL: ", DOCKER_API_URL);
+
 app.use(express.json());
 
 app.use(express.static('swagger-ui'));
@@ -15,9 +30,7 @@ app.get('/swaggerJSON/', function (request, response) {
 app.head('/v1.40/*', function (req, res) {
 	console.log("@HEAD");
 
-	console.log("@originalUrl", req.originalUrl);
-
-	request.get({url: 'http://192.168.88.17:2376' + req.originalUrl, headers: req.headers}, function (error, response) {
+	request.get({url: DOCKER_API_URL + req.originalUrl, headers: req.headers}, function (error, response) {
 		console.log('statusCode:', response && response.statusCode);
 		if (error) {
 			console.error('error:', error);
@@ -25,19 +38,15 @@ app.head('/v1.40/*', function (req, res) {
 		} else {
 			res.set(response.headers);
 			// res.status(response.statusCode).send(body);
-			// res.setHeader('Content-Type', 'application/json');
 			res.sendStatus(response.statusCode);
-			// res.body(body);
 		}
 	});
 });
 
-app.get('/v1.40/*', function (req, res) {
+app.get('/v1.40*', function (req, res) {
 	console.log("@GET");
 
-	console.log("@originalUrl", req.originalUrl);
-
-	request.get({url: 'http://192.168.88.17:2376' + req.originalUrl, headers: req.headers}, function (error, response, body) {
+	request.get({url: DOCKER_API_URL + req.originalUrl, headers: req.headers}, function (error, response, body) {
 		console.log('statusCode:', response && response.statusCode);
 		if (error) {
 			console.error('error:', error);
@@ -45,9 +54,7 @@ app.get('/v1.40/*', function (req, res) {
 		} else {
 			res.set(response.headers);
 			res.status(response.statusCode).send(body);
-			// res.setHeader('Content-Type', 'application/json');
 			// res.sendStatus(response.statusCode);
-			// res.body(body);
 		}
 	});
 });
@@ -55,7 +62,7 @@ app.get('/v1.40/*', function (req, res) {
 app.delete('/v1.40/*', function (req, res) {
 	console.log("@DELETE");
 
-	request.delete({url: 'http://192.168.88.17:2376' + req.originalUrl, headers: req.headers}, function (error, response, body) {
+	request.delete({url: DOCKER_API_URL + req.originalUrl, headers: req.headers}, function (error, response, body) {
 		console.log('statusCode:', response && response.statusCode);
 		if (error) {
 			console.error('error:', error);
@@ -70,18 +77,12 @@ app.delete('/v1.40/*', function (req, res) {
 app.post('/v1.40/*', function (req, res) {
 	console.log("@POST");
 
-	console.log("@req body", req.body);
-
-	request.post({url: 'http://192.168.88.17:2376' + req.originalUrl, headers: req.headers}, function (error, response, body) {
+	request.post({url: DOCKER_API_URL + req.originalUrl, headers: req.headers}, function (error, response, body) {
 		console.log('statusCode:', response && response.statusCode);
 		if (error) {
 			console.error('error:', error);
 			res.status(500).send(error.toString());
 		} else {
-			console.log("@res body", body);
-			// console.log("@response", response);
-			console.log("@response", response.headers);
-
 			res.set(response.headers);
 			res.status(response.statusCode).send(body);
 		}
@@ -91,18 +92,12 @@ app.post('/v1.40/*', function (req, res) {
 app.put('/v1.40/*', function (req, res) {
 	console.log("@PUT");
 
-	console.log("@req body", req.body);
-
-	request.post({url: 'http://192.168.88.17:2376' + req.originalUrl, headers: req.headers}, function (error, response, body) {
+	request.post({url: DOCKER_API_URL + req.originalUrl, headers: req.headers}, function (error, response, body) {
 		console.log('statusCode:', response && response.statusCode);
 		if (error) {
 			console.error('error:', error);
 			res.status(500).send(error.toString());
 		} else {
-			console.log("@res body", body);
-			// console.log("@response", response);
-			console.log("@response", response.headers);
-
 			res.set(response.headers);
 			res.status(response.statusCode).send(body);
 		}
