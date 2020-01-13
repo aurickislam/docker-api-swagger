@@ -11,5 +11,5 @@ services:
     ports:
       - 8083:80
     environment:
-      - DOCKER_SERVER=10.1.0.41
+      - DOCKER_SERVER=192.168.88.17
       - DOCKER_PORT=2375

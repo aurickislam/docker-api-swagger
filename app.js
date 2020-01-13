@@ -53,6 +53,7 @@ app.get('/v1.40*', function (req, res) {
 			res.status(500).send(error.toString());
 		} else {
 			res.set(response.headers);
+			res.setHeader('Access-Control-Allow-Origin', '*');
 			res.status(response.statusCode).send(body);
 			// res.sendStatus(response.statusCode);
 		}
@@ -104,8 +105,8 @@ app.put('/v1.40/*', function (req, res) {
 	});
 });
 
-app.listen(80, () => {
+app.listen(8083, () => {
 	console.log('==============================');
-	console.log('Server is running at : 80 port');
+	console.log('Server is running at : 8083 port');
 	console.log('==============================');
 });
