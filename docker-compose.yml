@@ -9,7 +9,7 @@ services:
     container_name: docker-api-swagger
     restart: always
     ports:
-      - 8083:80
+      - 8083:8083
     environment:
       - DOCKER_SERVER=192.168.88.17
       - DOCKER_PORT=2375

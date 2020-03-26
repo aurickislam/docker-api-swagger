@@ -8,7 +8,7 @@ RUN npm i
 
 COPY . .
 
-EXPOSE 80
+EXPOSE 8083
 
 CMD [ "node", "app.js" ]
 #CMD [ "npm", "run", "start" ]
