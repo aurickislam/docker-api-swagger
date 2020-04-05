@@ -4,7 +4,7 @@ const express = require('express'),
 	fetch = require('node-fetch');
 
 let DOCKER_SERVER = 'docker',
-	DOCKER_PORT = 2375;
+	DOCKER_PORT = 2376;
 
 if (process.env.DOCKER_SERVER && process.env.DOCKER_SERVER != '')
 	DOCKER_SERVER = process.env.DOCKER_SERVER;
@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(express.static('swagger-ui'));
 
 app.get('/swaggerJSON/', (request, response) => {
-	console.log("@swaggerJSON");
+	console.log("@GET swagger JSON");
 	response.send(require('./swagger'));
 	// response.send(require('./swagger-ui/swagger.json'));
 });
@@ -35,13 +35,22 @@ app.head('/v1.40/*', (req, res) => {
 		method: 'HEAD',
 		headers: req.headers
 	})
-		.then(response => res.sendStatus(response.statusCode))
+		.then(response => {
+			const headers = response.headers.raw(),
+				cType = response.headers.get('content-type');
+
+			if (cType != null)
+				headers['content-type'] = cType;
+
+			res.set(headers);
+			res.sendStatus(response.status);
+		})
 		.catch(err => {
 			console.error("@err", err);
 			res.status(500).send(err.toString());
 		});
 
-	/*request.get({url: DOCKER_API_URL + req.originalUrl, headers: req.headers}, (error, response) => {
+	/*request.head({url: DOCKER_API_URL + req.originalUrl, headers: req.headers}, (error, response) => {
 		console.log('statusCode:', response && response.statusCode);
 		if (error) {
 			console.error('error:', error);
@@ -128,9 +137,13 @@ app.delete('/v1.40/*', (req, res) => {
 app.post('/v1.40/*', (req, res) => {
 	console.log("@POST");
 
+	let body = null;
+	if (Object.keys(req.body).length > 0)
+		body = JSON.stringify(req.body);
+
 	fetch(DOCKER_API_URL + req.originalUrl, {
 		method: 'POST',
-		body: null,
+		body: body,
 		headers: req.headers
 	})
 		.then(async response => {
@@ -164,9 +177,13 @@ app.post('/v1.40/*', (req, res) => {
 app.put('/v1.40/*', (req, res) => {
 	console.log("@PUT");
 
+	let body = null;
+	if (Object.keys(req.body).length > 0)
+		body = JSON.stringify(req.body);
+
 	fetch(DOCKER_API_URL + req.originalUrl, {
 		method: 'PUT',
-		body: null,
+		body: body,
 		headers: req.headers
 	})
 		.then(async response => {
@@ -198,7 +215,7 @@ app.put('/v1.40/*', (req, res) => {
 });
 
 app.listen(8083, _ => {
-	console.log('==============================');
-	console.log('Server is running at : 8083 port');
-	console.log('==============================');
+	console.log('================================');
+	console.log('Server is running at port : 8083');
+	console.log('================================');
 });

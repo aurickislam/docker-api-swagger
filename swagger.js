@@ -675,6 +675,63 @@ module.exports = {
 				}
 			}
 		},
+		"Health": {
+			"description": "Health stores information about the container's healthcheck results.\n",
+			"type": "object",
+			"properties": {
+				"Status": {
+					"description": "Status is one of `none`, `starting`, `healthy` or `unhealthy`\n\n- \"none\"      Indicates there is no healthcheck\n- \"starting\"  Starting indicates that the container is not yet ready\n- \"healthy\"   Healthy indicates that the container is running correctly\n- \"unhealthy\" Unhealthy indicates that the container has a problem\n",
+					"type": "string",
+					"enum": [
+						"none",
+						"starting",
+						"healthy",
+						"unhealthy"
+					],
+					"example": "healthy"
+				},
+				"FailingStreak": {
+					"description": "FailingStreak is the number of consecutive failures",
+					"type": "integer",
+					"example": 0
+				},
+				"Log": {
+					"type": "array",
+					"description": "Log contains the last few results (oldest first)\n",
+					"items": {
+						"x-nullable": true,
+						"$ref": "#/definitions/HealthcheckResult"
+					}
+				}
+			}
+		},
+		"HealthcheckResult": {
+			"description": "HealthcheckResult stores information about a single run of a healthcheck probe\n",
+			"type": "object",
+			"properties": {
+				"Start": {
+					"description": "Date and time at which this check started in\n[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.\n",
+					"type": "string",
+					"format": "date-time",
+					"example": "2020-01-04T10:44:24.496525531Z"
+				},
+				"End": {
+					"description": "Date and time at which this check ended in\n[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.\n",
+					"type": "string",
+					"format": "dateTime",
+					"example": "2020-01-04T10:45:21.364524523Z"
+				},
+				"ExitCode": {
+					"description": "ExitCode meanings:\n\n- `0` healthy\n- `1` unhealthy\n- `2` reserved (considered unhealthy)\n- other values: error running probe\n",
+					"type": "integer",
+					"example": 0
+				},
+				"Output": {
+					"description": "Output from last check",
+					"type": "string"
+				}
+			}
+		},
 		"HostConfig": {
 			"description": "Container configuration that depends on the host we are running on",
 			"allOf": [
@@ -686,7 +743,7 @@ module.exports = {
 					"properties": {
 						"Binds": {
 							"type": "array",
-							"description": "A list of volume bindings for this container. Each volume binding is a string in one of these forms:\n\n- `host-src:container-dest` to bind-mount a host path into the container. Both `host-src`, and `container-dest` must be an _absolute_ path.\n- `host-src:container-dest:ro` to make the bind mount read-only inside the container. Both `host-src`, and `container-dest` must be an _absolute_ path.\n- `volume-name:container-dest` to bind-mount a volume managed by a volume driver into the container. `container-dest` must be an _absolute_ path.\n- `volume-name:container-dest:ro` to mount the volume read-only inside the container.  `container-dest` must be an _absolute_ path.\n",
+							"description": "A list of volume bindings for this container. Each volume binding\nis a string in one of these forms:\n\n- `host-src:container-dest[:options]` to bind-mount a host path\n  into the container. Both `host-src`, and `container-dest` must\n  be an _absolute_ path.\n- `volume-name:container-dest[:options]` to bind-mount a volume\n  managed by a volume driver into the container. `container-dest`\n  must be an _absolute_ path.\n\n`options` is an optional, comma-delimited list of:\n\n- `nocopy` disables automatic copying of data from the container\n  path to the volume. The `nocopy` flag only applies to named volumes.\n- `[ro|rw]` mounts a volume read-only or read-write, respectively.\n  If omitted or set to `rw`, volumes are mounted read-write.\n- `[z|Z]` applies SELinux labels to allow or deny multiple containers\n  to read and write to the same volume.\n    - `z`: a _shared_ content label is applied to the content. This\n      label indicates that multiple containers can share the volume\n      content, for both reading and writing.\n    - `Z`: a _private unshared_ label is applied to the content.\n      This label indicates that only the current container can use\n      a private volume. Labeling systems such as SELinux require\n      proper labels to be placed on volume content that is mounted\n      into a container. Without a label, the security system can\n      prevent a container's processes from using the content. By\n      default, the labels set by the host operating system are not\n      modified.\n- `[[r]shared|[r]slave|[r]private]` specifies mount\n  [propagation behavior](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt).\n  This only applies to bind-mounted volumes, not internal volumes\n  or named volumes. Mount propagation requires the source mount\n  point (the location where the source directory is mounted in the\n  host operating system) to have the correct propagation properties.\n  For shared volumes, the source mount point must be set to `shared`.\n  For slave volumes, the mount must be set to either `shared` or\n  `slave`.\n",
 							"items": {
 								"type": "string"
 							}
@@ -3446,7 +3503,7 @@ module.exports = {
 					"type": "object",
 					"properties": {
 						"Constraints": {
-							"description": "An array of constraints.",
+							"description": "An array of constraint expressions to limit the set of nodes where\na task can be scheduled. Constraint expressions can either use a\n_match_ (`==`) or _exclude_ (`!=`) rule. Multiple constraints find\nnodes that satisfy every expression (AND match). Constraints can\nmatch node or Docker Engine labels as follows:\n\nnode attribute       | matches                        | example\n---------------------|--------------------------------|-----------------------------------------------\n`node.id`            | Node ID                        | `node.id==2ivku8v2gvtg4`\n`node.hostname`      | Node hostname                  | `node.hostname!=node-2`\n`node.role`          | Node role (`manager`/`worker`) | `node.role==manager`\n`node.platform.os`   | Node operating system          | `node.platform.os==windows`\n`node.platform.arch` | Node architecture              | `node.platform.arch==x86_64`\n`node.labels`        | User-defined node labels       | `node.labels.security==high`\n`engine.labels`      | Docker Engine's labels         | `engine.labels.operatingsystem==ubuntu-14.04`\n\n`engine.labels` apply to Docker Engine labels like operating system,\ndrivers, etc. Swarm administrators add `node.labels` for operational\npurposes by using the [`node update endpoint`](#operation/NodeUpdate).\n",
 							"type": "array",
 							"items": {
 								"type": "string"
@@ -3454,7 +3511,9 @@ module.exports = {
 							"example": [
 								"node.hostname!=node3.corp.example.com",
 								"node.role!=manager",
-								"node.labels.type==production"
+								"node.labels.type==production",
+								"node.platform.os==linux",
+								"node.platform.arch==x86_64"
 							]
 						},
 						"Preferences": {
@@ -3511,20 +3570,10 @@ module.exports = {
 					"type": "string"
 				},
 				"Networks": {
+					"description": "Specifies which networks the service should attach to.",
 					"type": "array",
 					"items": {
-						"type": "object",
-						"properties": {
-							"Target": {
-								"type": "string"
-							},
-							"Aliases": {
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
-							}
-						}
+						"$ref": "#/definitions/NetworkAttachmentConfig"
 					}
 				},
 				"LogDriver": {
@@ -3871,21 +3920,10 @@ module.exports = {
 					}
 				},
 				"Networks": {
-					"description": "Array of network names or IDs to attach the service to.",
+					"description": "Specifies which networks the service should attach to.",
 					"type": "array",
 					"items": {
-						"type": "object",
-						"properties": {
-							"Target": {
-								"type": "string"
-							},
-							"Aliases": {
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
-							}
-						}
+						"$ref": "#/definitions/NetworkAttachmentConfig"
 					}
 				},
 				"EndpointSpec": {
@@ -3932,7 +3970,7 @@ module.exports = {
 			"type": "object",
 			"properties": {
 				"Mode": {
-					"description": "The mode of resolution to use for internal load balancing between tasks.",
+					"description": "The mode of resolution to use for internal load balancing between tasks.\n",
 					"type": "string",
 					"enum": [
 						"vip",
@@ -4359,6 +4397,77 @@ module.exports = {
 				},
 				"Spec": {
 					"$ref": "#/definitions/ConfigSpec"
+				}
+			}
+		},
+		"ContainerState": {
+			"description": "ContainerState stores container's running state. It's part of ContainerJSONBase\nand will be returned by the \"inspect\" command.\n",
+			"type": "object",
+			"properties": {
+				"Status": {
+					"description": "String representation of the container state. Can be one of \"created\",\n\"running\", \"paused\", \"restarting\", \"removing\", \"exited\", or \"dead\".\n",
+					"type": "string",
+					"enum": [
+						"created",
+						"running",
+						"paused",
+						"restarting",
+						"removing",
+						"exited",
+						"dead"
+					],
+					"example": "running"
+				},
+				"Running": {
+					"description": "Whether this container is running.\n\nNote that a running container can be _paused_. The `Running` and `Paused`\nbooleans are not mutually exclusive:\n\nWhen pausing a container (on Linux), the freezer cgroup is used to suspend\nall processes in the container. Freezing the process requires the process to\nbe running. As a result, paused containers are both `Running` _and_ `Paused`.\n\nUse the `Status` field instead to determine if a container's state is \"running\".\n",
+					"type": "boolean",
+					"example": true
+				},
+				"Paused": {
+					"description": "Whether this container is paused.",
+					"type": "boolean",
+					"example": false
+				},
+				"Restarting": {
+					"description": "Whether this container is restarting.",
+					"type": "boolean",
+					"example": false
+				},
+				"OOMKilled": {
+					"description": "Whether this container has been killed because it ran out of memory.",
+					"type": "boolean",
+					"example": false
+				},
+				"Dead": {
+					"type": "boolean",
+					"example": false
+				},
+				"Pid": {
+					"description": "The process ID of this container",
+					"type": "integer",
+					"example": 1234
+				},
+				"ExitCode": {
+					"description": "The last exit code of this container",
+					"type": "integer",
+					"example": 0
+				},
+				"Error": {
+					"type": "string"
+				},
+				"StartedAt": {
+					"description": "The time when this container was last started.",
+					"type": "string",
+					"example": "2020-01-06T09:06:59.461876391Z"
+				},
+				"FinishedAt": {
+					"description": "The time when this container last exited.",
+					"type": "string",
+					"example": "2020-01-06T09:07:59.461876391Z"
+				},
+				"Health": {
+					"x-nullable": true,
+					"$ref": "#/definitions/Health"
 				}
 			}
 		},
@@ -5140,6 +5249,30 @@ module.exports = {
 					"type": "string"
 				}
 			}
+		},
+		"NetworkAttachmentConfig": {
+			"description": "Specifies how a service should be attached to a particular network.",
+			"type": "object",
+			"properties": {
+				"Target": {
+					"description": "The target network for attachment. Must be a network name or ID.",
+					"type": "string"
+				},
+				"Aliases": {
+					"description": "Discoverable alternate names for the service on this network.",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"DriverOpts": {
+					"description": "Driver attachment options for the network target",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			}
 		}
 	},
 	"paths": {
@@ -5679,61 +5812,8 @@ module.exports = {
 									}
 								},
 								"State": {
-									"description": "The state of the container.",
-									"type": "object",
-									"properties": {
-										"Status": {
-											"description": "The status of the container. For example, `\"running\"` or `\"exited\"`.\n",
-											"type": "string",
-											"enum": [
-												"created",
-												"running",
-												"paused",
-												"restarting",
-												"removing",
-												"exited",
-												"dead"
-											]
-										},
-										"Running": {
-											"description": "Whether this container is running.\n\nNote that a running container can be _paused_. The `Running` and `Paused`\nbooleans are not mutually exclusive:\n\nWhen pausing a container (on Linux), the cgroups freezer is used to suspend\nall processes in the container. Freezing the process requires the process to\nbe running. As a result, paused containers are both `Running` _and_ `Paused`.\n\nUse the `Status` field instead to determine if a container's state is \"running\".\n",
-											"type": "boolean"
-										},
-										"Paused": {
-											"description": "Whether this container is paused.",
-											"type": "boolean"
-										},
-										"Restarting": {
-											"description": "Whether this container is restarting.",
-											"type": "boolean"
-										},
-										"OOMKilled": {
-											"description": "Whether this container has been killed because it ran out of memory.",
-											"type": "boolean"
-										},
-										"Dead": {
-											"type": "boolean"
-										},
-										"Pid": {
-											"description": "The process ID of this container",
-											"type": "integer"
-										},
-										"ExitCode": {
-											"description": "The last exit code of this container",
-											"type": "integer"
-										},
-										"Error": {
-											"type": "string"
-										},
-										"StartedAt": {
-											"description": "The time when this container was last started.",
-											"type": "string"
-										},
-										"FinishedAt": {
-											"description": "The time when this container last exited.",
-											"type": "string"
-										}
-									}
+									"x-nullable": true,
+									"$ref": "#/definitions/ContainerState"
 								},
 								"Image": {
 									"description": "The container's image",
@@ -5762,6 +5842,9 @@ module.exports = {
 									"type": "integer"
 								},
 								"Driver": {
+									"type": "string"
+								},
+								"Platform": {
 									"type": "string"
 								},
 								"MountLabel": {
@@ -5831,6 +5914,12 @@ module.exports = {
 									"Env": [
 										"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 									],
+									"Healthcheck": {
+										"Test": [
+											"CMD-SHELL",
+											"exit 0"
+										]
+									},
 									"Hostname": "ba033ac44011",
 									"Image": "ubuntu",
 									"Labels": {
@@ -5959,6 +6048,18 @@ module.exports = {
 									"Error": "",
 									"ExitCode": 9,
 									"FinishedAt": "2015-01-06T15:47:32.080254511Z",
+									"Health": {
+										"Status": "healthy",
+										"FailingStreak": 0,
+										"Log": [
+											{
+												"Start": "2019-12-22T10:59:05.6385933Z",
+												"End": "2019-12-22T10:59:05.8078452Z",
+												"ExitCode": 0,
+												"Output": ""
+											}
+										]
+									},
 									"OOMKilled": false,
 									"Dead": false,
 									"Paused": false,
@@ -6588,10 +6689,7 @@ module.exports = {
 						"description": "no error"
 					},
 					"304": {
-						"description": "container already started",
-						"schema": {
-							"$ref": "#/definitions/ErrorResponse"
-						}
+						"description": "container already started"
 					},
 					"404": {
 						"description": "no such container",
@@ -6640,10 +6738,7 @@ module.exports = {
 						"description": "no error"
 					},
 					"304": {
-						"description": "container already stopped",
-						"schema": {
-							"$ref": "#/definitions/ErrorResponse"
-						}
+						"description": "container already stopped"
 					},
 					"404": {
 						"description": "no such container",
@@ -6942,7 +7037,7 @@ module.exports = {
 		"/containers/{id}/pause": {
 			"post": {
 				"summary": "Pause a container",
-				"description": "Use the cgroups freezer to suspend all processes in a container.\n\nTraditionally, when suspending a process the `SIGSTOP` signal is used, which is observable by the process being suspended. With the cgroups freezer the process is unaware, and unable to capture, that it is being suspended, and subsequently resumed.\n",
+				"description": "Use the freezer cgroup to suspend all processes in a container.\n\nTraditionally, when suspending a process the `SIGSTOP` signal is used, which is observable by the process being suspended. With the freezer cgroup the process is unaware, and unable to capture, that it is being suspended, and subsequently resumed.\n",
 				"operationId": "ContainerPause",
 				"responses": {
 					"204": {
@@ -7875,7 +7970,7 @@ module.exports = {
 					{
 						"name": "networkmode",
 						"in": "query",
-						"description": "Sets the networking mode for the run commands during build. Supported standard values are: `bridge`, `host`, `none`, and `container:<name|id>`. Any other value is taken as a custom network's name to which this container should connect to.",
+						"description": "Sets the networking mode for the run commands during build. Supported\nstandard values are: `bridge`, `host`, `none`, and `container:<name|id>`.\nAny other value is taken as a custom network's name or ID to which this\ncontainer should connect to.\n",
 						"type": "string"
 					},
 					{
@@ -8051,6 +8146,12 @@ module.exports = {
 						"name": "tag",
 						"in": "query",
 						"description": "Tag or digest. If empty when pulling an image, this causes all tags for the given image to be pulled.",
+						"type": "string"
+					},
+					{
+						"name": "message",
+						"in": "query",
+						"description": "Set commit message for imported image.",
 						"type": "string"
 					},
 					{
@@ -12230,15 +12331,19 @@ module.exports = {
 					{
 						"name": "registryAuthFrom",
 						"in": "query",
+						"description": "If the `X-Registry-Auth` header is not specified, this parameter\nindicates where to find registry authorization credentials.\n",
 						"type": "string",
-						"description": "If the X-Registry-Auth header is not specified, this parameter indicates where to find registry authorization credentials. The valid values are `spec` and `previous-spec`.",
+						"enum": [
+							"spec",
+							"previous-spec"
+						],
 						"default": "spec"
 					},
 					{
 						"name": "rollback",
 						"in": "query",
-						"type": "string",
-						"description": "Set to this parameter to `previous` to cause a server-side rollback to the previous service spec. The supplied spec will be ignored in this case."
+						"description": "Set to this parameter to `previous` to cause a server-side rollback\nto the previous service spec. The supplied spec will be ignored in\nthis case.\n",
+						"type": "string"
 					},
 					{
 						"name": "X-Registry-Auth",
