@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   docker-api-swagger:
@@ -7,9 +7,10 @@ services:
       dockerfile: Dockerfile
     image: docker-api-swagger
     container_name: docker-api-swagger
+    hostname: docker-api-swagger
     restart: always
     ports:
       - 8083:8083
     environment:
-      - DOCKER_SERVER=192.168.88.17
-      - DOCKER_PORT=2375
+      - DOCKER_SERVER=192.168.88.18
+      - DOCKER_PORT=2376

@@ -12,7 +12,7 @@ module.exports = {
 		"application/json",
 		"text/plain"
 	],
-	// "host": "127.0.0.1:80",
+// "host": "127.0.0.1:80",
 	"basePath": "/v1.40",
 	"info": {
 		"title": "Docker Engine API",
@@ -20,7 +20,7 @@ module.exports = {
 		"x-logo": {
 			"url": "https://docs.docker.com/images/logo-docker-main.png"
 		},
-		"description": "The Engine API is an HTTP API served by Docker Engine. It is the API the Docker client uses to communicate with the Engine, so everything the Docker client can do can be done with the API.\n\nMost of the client's commands map directly to API endpoints (e.g. `docker ps` is `GET /containers/json`). The notable exception is running containers, which consists of several API calls.\n\n# Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure of the API call. The body of the response will be JSON in the following format:\n\n```\n{\n  \"message\": \"page not found\"\n}\n```\n\n# Versioning\n\nThe API is usually changed in each release, so API calls are versioned to\nensure that clients don't break. To lock to a specific version of the API,\nyou prefix the URL with its version, for example, call `/v1.30/info` to use\nthe v1.30 version of the `/info` endpoint. If the API version specified in\nthe URL is not supported by the daemon, a HTTP `400 Bad Request` error message\nis returned.\n\nIf you omit the version-prefix, the current version of the API (v1.40) is used.\nFor example, calling `/info` is the same as calling `/v1.40/info`. Using the\nAPI without a version-prefix is deprecated and will be removed in a future release.\n\nEngine releases in the near future should support this version of the API,\nso your client will continue to work even if it is talking to a newer Engine.\n\nThe API uses an open schema model, which means server may add extra properties\nto responses. Likewise, the server will ignore any extra query parameters and\nrequest body properties. When you write clients, you need to ignore additional\nproperties in responses to ensure they do not break when talking to newer\ndaemons.\n\n\n# Authentication\n\nAuthentication for registries is handled client side. The client has to send authentication details to various endpoints that need to communicate with registries, such as `POST /images/(name)/push`. These are sent as `X-Registry-Auth` header as a Base64 encoded (JSON) string with the following structure:\n\n```\n{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"serveraddress\": \"string\"\n}\n```\n\nThe `serveraddress` is a domain/IP without a protocol. Throughout this structure, double quotes are required.\n\nIf you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth), you can just pass this instead of credentials:\n\n```\n{\n  \"identitytoken\": \"9cbaf023786cd7...\"\n}\n```\n"
+		"description": "The Engine API is an HTTP API served by Docker Engine. It is the API the\nDocker client uses to communicate with the Engine, so everything the Docker\nclient can do can be done with the API.\n\nMost of the client's commands map directly to API endpoints (e.g. `docker ps`\nis `GET /containers/json`). The notable exception is running containers,\nwhich consists of several API calls.\n\n# Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure\nof the API call. The body of the response will be JSON in the following\nformat:\n\n```\n{\n  \"message\": \"page not found\"\n}\n```\n\n# Versioning\n\nThe API is usually changed in each release, so API calls are versioned to\nensure that clients don't break. To lock to a specific version of the API,\nyou prefix the URL with its version, for example, call `/v1.30/info` to use\nthe v1.30 version of the `/info` endpoint. If the API version specified in\nthe URL is not supported by the daemon, a HTTP `400 Bad Request` error message\nis returned.\n\nIf you omit the version-prefix, the current version of the API (v1.40) is used.\nFor example, calling `/info` is the same as calling `/v1.40/info`. Using the\nAPI without a version-prefix is deprecated and will be removed in a future release.\n\nEngine releases in the near future should support this version of the API,\nso your client will continue to work even if it is talking to a newer Engine.\n\nThe API uses an open schema model, which means server may add extra properties\nto responses. Likewise, the server will ignore any extra query parameters and\nrequest body properties. When you write clients, you need to ignore additional\nproperties in responses to ensure they do not break when talking to newer\ndaemons.\n\n\n# Authentication\n\nAuthentication for registries is handled client side. The client has to send\nauthentication details to various endpoints that need to communicate with\nregistries, such as `POST /images/(name)/push`. These are sent as\n`X-Registry-Auth` header as a [base64url encoded](https://tools.ietf.org/html/rfc4648#section-5)\n(JSON) string with the following structure:\n\n```\n{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"serveraddress\": \"string\"\n}\n```\n\nThe `serveraddress` is a domain/IP without a protocol. Throughout this\nstructure, double quotes are required.\n\nIf you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth),\nyou can just pass this instead of credentials:\n\n```\n{\n  \"identitytoken\": \"9cbaf023786cd7...\"\n}\n```\n"
 	},
 	"tags": [
 		{
@@ -35,7 +35,7 @@ module.exports = {
 		{
 			"name": "Network",
 			"x-displayName": "Networks",
-			"description": "Networks are user-defined networks that containers can be attached to. See the [networking documentation](https://docs.docker.com/engine/userguide/networking/) for more information.\n"
+			"description": "Networks are user-defined networks that containers can be attached to.\nSee the [networking documentation](https://docs.docker.com/network/)\nfor more information.\n"
 		},
 		{
 			"name": "Volume",
@@ -45,37 +45,37 @@ module.exports = {
 		{
 			"name": "Exec",
 			"x-displayName": "Exec",
-			"description": "Run new commands inside running containers. See the [command-line reference](https://docs.docker.com/engine/reference/commandline/exec/) for more information.\n\nTo exec a command in a container, you first need to create an exec instance, then start it. These two API endpoints are wrapped up in a single command-line command, `docker exec`.\n"
+			"description": "Run new commands inside running containers. Refer to the\n[command-line reference](https://docs.docker.com/engine/reference/commandline/exec/)\nfor more information.\n\nTo exec a command in a container, you first need to create an exec instance,\nthen start it. These two API endpoints are wrapped up in a single command-line\ncommand, `docker exec`.\n"
 		},
 		{
 			"name": "Swarm",
 			"x-displayName": "Swarm",
-			"description": "Engines can be clustered together in a swarm. See [the swarm mode documentation](https://docs.docker.com/engine/swarm/) for more information.\n"
+			"description": "Engines can be clustered together in a swarm. Refer to the\n[swarm mode documentation](https://docs.docker.com/engine/swarm/)\nfor more information.\n"
 		},
 		{
 			"name": "Node",
 			"x-displayName": "Nodes",
-			"description": "Nodes are instances of the Engine participating in a swarm. Swarm mode must be enabled for these endpoints to work.\n"
+			"description": "Nodes are instances of the Engine participating in a swarm. Swarm mode\nmust be enabled for these endpoints to work.\n"
 		},
 		{
 			"name": "Service",
 			"x-displayName": "Services",
-			"description": "Services are the definitions of tasks to run on a swarm. Swarm mode must be enabled for these endpoints to work.\n"
+			"description": "Services are the definitions of tasks to run on a swarm. Swarm mode must\nbe enabled for these endpoints to work.\n"
 		},
 		{
 			"name": "Task",
 			"x-displayName": "Tasks",
-			"description": "A task is a container running on a swarm. It is the atomic scheduling unit of swarm. Swarm mode must be enabled for these endpoints to work.\n"
+			"description": "A task is a container running on a swarm. It is the atomic scheduling unit\nof swarm. Swarm mode must be enabled for these endpoints to work.\n"
 		},
 		{
 			"name": "Secret",
 			"x-displayName": "Secrets",
-			"description": "Secrets are sensitive data that can be used by services. Swarm mode must be enabled for these endpoints to work.\n"
+			"description": "Secrets are sensitive data that can be used by services. Swarm mode must\nbe enabled for these endpoints to work.\n"
 		},
 		{
 			"name": "Config",
 			"x-displayName": "Configs",
-			"description": "Configs are application configurations that can be used by services. Swarm mode must be enabled for these endpoints to work.\n"
+			"description": "Configs are application configurations that can be used by services. Swarm\nmode must be enabled for these endpoints to work.\n"
 		},
 		{
 			"name": "Plugin",
@@ -346,7 +346,7 @@ module.exports = {
 			}
 		},
 		"RestartPolicy": {
-			"description": "The behavior to apply when the container exits. The default is not to restart.\n\nAn ever increasing delay (double the previous delay, starting at 100ms) is added before each restart to prevent flooding the server.\n",
+			"description": "The behavior to apply when the container exits. The default is not to\nrestart.\n\nAn ever increasing delay (double the previous delay, starting at 100ms) is\nadded before each restart to prevent flooding the server.\n",
 			"type": "object",
 			"properties": {
 				"Name": {
@@ -361,7 +361,7 @@ module.exports = {
 				},
 				"MaximumRetryCount": {
 					"type": "integer",
-					"description": "If `on-failure` is used, the number of times to retry before giving up"
+					"description": "If `on-failure` is used, the number of times to retry before giving up.\n"
 				}
 			}
 		},
@@ -370,7 +370,7 @@ module.exports = {
 			"type": "object",
 			"properties": {
 				"CpuShares": {
-					"description": "An integer value representing this container's relative CPU weight versus other containers.",
+					"description": "An integer value representing this container's relative CPU weight\nversus other containers.\n",
 					"type": "integer"
 				},
 				"Memory": {
@@ -380,7 +380,7 @@ module.exports = {
 					"default": 0
 				},
 				"CgroupParent": {
-					"description": "Path to `cgroups` under which the container's `cgroup` is created. If the path is not absolute, the path is considered to be relative to the `cgroups` path of the init process. Cgroups are created if they do not already exist.",
+					"description": "Path to `cgroups` under which the container's `cgroup` is created. If\nthe path is not absolute, the path is considered to be relative to the\n`cgroups` path of the init process. Cgroups are created if they do not\nalready exist.\n",
 					"type": "string"
 				},
 				"BlkioWeight": {
@@ -390,7 +390,7 @@ module.exports = {
 					"maximum": 1000
 				},
 				"BlkioWeightDevice": {
-					"description": "Block IO weight (relative device weight) in the form `[{\"Path\": \"device_path\", \"Weight\": weight}]`.\n",
+					"description": "Block IO weight (relative device weight) in the form:\n\n```\n[{\"Path\": \"device_path\", \"Weight\": weight}]\n```\n",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -406,28 +406,28 @@ module.exports = {
 					}
 				},
 				"BlkioDeviceReadBps": {
-					"description": "Limit read rate (bytes per second) from a device, in the form `[{\"Path\": \"device_path\", \"Rate\": rate}]`.\n",
+					"description": "Limit read rate (bytes per second) from a device, in the form:\n\n```\n[{\"Path\": \"device_path\", \"Rate\": rate}]\n```\n",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/ThrottleDevice"
 					}
 				},
 				"BlkioDeviceWriteBps": {
-					"description": "Limit write rate (bytes per second) to a device, in the form `[{\"Path\": \"device_path\", \"Rate\": rate}]`.\n",
+					"description": "Limit write rate (bytes per second) to a device, in the form:\n\n```\n[{\"Path\": \"device_path\", \"Rate\": rate}]\n```\n",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/ThrottleDevice"
 					}
 				},
 				"BlkioDeviceReadIOps": {
-					"description": "Limit read rate (IO per second) from a device, in the form `[{\"Path\": \"device_path\", \"Rate\": rate}]`.\n",
+					"description": "Limit read rate (IO per second) from a device, in the form:\n\n```\n[{\"Path\": \"device_path\", \"Rate\": rate}]\n```\n",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/ThrottleDevice"
 					}
 				},
 				"BlkioDeviceWriteIOps": {
-					"description": "Limit write rate (IO per second) to a device, in the form `[{\"Path\": \"device_path\", \"Rate\": rate}]`.\n",
+					"description": "Limit write rate (IO per second) to a device, in the form:\n\n```\n[{\"Path\": \"device_path\", \"Rate\": rate}]\n```\n",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/ThrottleDevice"
@@ -439,27 +439,27 @@ module.exports = {
 					"format": "int64"
 				},
 				"CpuQuota": {
-					"description": "Microseconds of CPU time that the container can get in a CPU period.",
+					"description": "Microseconds of CPU time that the container can get in a CPU period.\n",
 					"type": "integer",
 					"format": "int64"
 				},
 				"CpuRealtimePeriod": {
-					"description": "The length of a CPU real-time period in microseconds. Set to 0 to allocate no time allocated to real-time tasks.",
+					"description": "The length of a CPU real-time period in microseconds. Set to 0 to\nallocate no time allocated to real-time tasks.\n",
 					"type": "integer",
 					"format": "int64"
 				},
 				"CpuRealtimeRuntime": {
-					"description": "The length of a CPU real-time runtime in microseconds. Set to 0 to allocate no time allocated to real-time tasks.",
+					"description": "The length of a CPU real-time runtime in microseconds. Set to 0 to\nallocate no time allocated to real-time tasks.\n",
 					"type": "integer",
 					"format": "int64"
 				},
 				"CpusetCpus": {
-					"description": "CPUs in which to allow execution (e.g., `0-3`, `0,1`)",
+					"description": "CPUs in which to allow execution (e.g., `0-3`, `0,1`).\n",
 					"type": "string",
 					"example": "0-3"
 				},
 				"CpusetMems": {
-					"description": "Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems.",
+					"description": "Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only\neffective on NUMA systems.\n",
 					"type": "string"
 				},
 				"Devices": {
@@ -478,7 +478,7 @@ module.exports = {
 					}
 				},
 				"DeviceRequests": {
-					"description": "a list of requests for devices to be sent to device drivers",
+					"description": "A list of requests for devices to be sent to device drivers.\n",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/DeviceRequest"
@@ -501,12 +501,12 @@ module.exports = {
 					"format": "int64"
 				},
 				"MemorySwap": {
-					"description": "Total memory limit (memory + swap). Set as `-1` to enable unlimited swap.",
+					"description": "Total memory limit (memory + swap). Set as `-1` to enable unlimited\nswap.\n",
 					"type": "integer",
 					"format": "int64"
 				},
 				"MemorySwappiness": {
-					"description": "Tune a container's memory swappiness behavior. Accepts an integer between 0 and 100.",
+					"description": "Tune a container's memory swappiness behavior. Accepts an integer\nbetween 0 and 100.\n",
 					"type": "integer",
 					"format": "int64",
 					"minimum": 0,
@@ -522,18 +522,18 @@ module.exports = {
 					"type": "boolean"
 				},
 				"Init": {
-					"description": "Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used.",
+					"description": "Run an init inside the container that forwards signals and reaps\nprocesses. This field is omitted if empty, and the default (as\nconfigured on the daemon) is used.\n",
 					"type": "boolean",
 					"x-nullable": true
 				},
 				"PidsLimit": {
-					"description": "Tune a container's PIDs limit. Set `0` or `-1` for unlimited, or `null` to not change.\n",
+					"description": "Tune a container's PIDs limit. Set `0` or `-1` for unlimited, or `null`\nto not change.\n",
 					"type": "integer",
 					"format": "int64",
 					"x-nullable": true
 				},
 				"Ulimits": {
-					"description": "A list of resource limits to set in the container. For example: `{\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048}`\"\n",
+					"description": "A list of resource limits to set in the container. For example:\n\n```\n{\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048}\n```\n",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -554,12 +554,12 @@ module.exports = {
 					}
 				},
 				"CpuCount": {
-					"description": "The number of usable CPUs (Windows only).\n\nOn Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last.\n",
+					"description": "The number of usable CPUs (Windows only).\n\nOn Windows Server containers, the processor resource controls are\nmutually exclusive. The order of precedence is `CPUCount` first, then\n`CPUShares`, and `CPUPercent` last.\n",
 					"type": "integer",
 					"format": "int64"
 				},
 				"CpuPercent": {
-					"description": "The usable percentage of the available CPUs (Windows only).\n\nOn Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last.\n",
+					"description": "The usable percentage of the available CPUs (Windows only).\n\nOn Windows Server containers, the processor resource controls are\nmutually exclusive. The order of precedence is `CPUCount` first, then\n`CPUShares`, and `CPUPercent` last.\n",
 					"type": "integer",
 					"format": "int64"
 				},
@@ -569,14 +569,14 @@ module.exports = {
 					"format": "int64"
 				},
 				"IOMaximumBandwidth": {
-					"description": "Maximum IO in bytes per second for the container system drive (Windows only)",
+					"description": "Maximum IO in bytes per second for the container system drive\n(Windows only).\n",
 					"type": "integer",
 					"format": "int64"
 				}
 			}
 		},
 		"ResourceObject": {
-			"description": "An object describing the resources which can be advertised by a node and requested by a task",
+			"description": "An object describing the resources which can be advertised by a node and\nrequested by a task.\n",
 			"type": "object",
 			"properties": {
 				"NanoCPUs": {
@@ -595,7 +595,7 @@ module.exports = {
 			}
 		},
 		"GenericResources": {
-			"description": "User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`)",
+			"description": "User-defined resources can be either Integer resources (e.g, `SSD=3`) or\nString resources (e.g, `GPU=UUID1`).\n",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -658,19 +658,19 @@ module.exports = {
 					}
 				},
 				"Interval": {
-					"description": "The time to wait between checks in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit.",
+					"description": "The time to wait between checks in nanoseconds. It should be 0 or at\nleast 1000000 (1 ms). 0 means inherit.\n",
 					"type": "integer"
 				},
 				"Timeout": {
-					"description": "The time to wait before considering the check to have hung. It should be 0 or at least 1000000 (1 ms). 0 means inherit.",
+					"description": "The time to wait before considering the check to have hung. It should\nbe 0 or at least 1000000 (1 ms). 0 means inherit.\n",
 					"type": "integer"
 				},
 				"Retries": {
-					"description": "The number of consecutive failures needed to consider a container as unhealthy. 0 means inherit.",
+					"description": "The number of consecutive failures needed to consider a container as\nunhealthy. 0 means inherit.\n",
 					"type": "integer"
 				},
 				"StartPeriod": {
-					"description": "Start period for the container to initialize before starting health-retries countdown in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit.",
+					"description": "Start period for the container to initialize before starting\nhealth-retries countdown in nanoseconds. It should be 0 or at least\n1000000 (1 ms). 0 means inherit.\n",
 					"type": "integer"
 				}
 			}
@@ -780,7 +780,7 @@ module.exports = {
 						},
 						"NetworkMode": {
 							"type": "string",
-							"description": "Network mode to use for this container. Supported standard values are: `bridge`, `host`, `none`, and `container:<name|id>`. Any other value is taken as a custom network's name to which this container should connect to."
+							"description": "Network mode to use for this container. Supported standard values\nare: `bridge`, `host`, `none`, and `container:<name|id>`. Any\nother value is taken as a custom network's name to which this\ncontainer should connect to.\n"
 						},
 						"PortBindings": {
 							"$ref": "#/definitions/PortMap"
@@ -790,7 +790,7 @@ module.exports = {
 						},
 						"AutoRemove": {
 							"type": "boolean",
-							"description": "Automatically remove the container when the container's process exits. This has no effect if `RestartPolicy` is set."
+							"description": "Automatically remove the container when the container's process\nexits. This has no effect if `RestartPolicy` is set.\n"
 						},
 						"VolumeDriver": {
 							"type": "string",
@@ -798,13 +798,13 @@ module.exports = {
 						},
 						"VolumesFrom": {
 							"type": "array",
-							"description": "A list of volumes to inherit from another container, specified in the form `<container name>[:<ro|rw>]`.",
+							"description": "A list of volumes to inherit from another container, specified in\nthe form `<container name>[:<ro|rw>]`.\n",
 							"items": {
 								"type": "string"
 							}
 						},
 						"Mounts": {
-							"description": "Specification for mounts to be added to the container.",
+							"description": "Specification for mounts to be added to the container.\n",
 							"type": "array",
 							"items": {
 								"$ref": "#/definitions/Mount"
@@ -812,21 +812,21 @@ module.exports = {
 						},
 						"Capabilities": {
 							"type": "array",
-							"description": "A list of kernel capabilities to be available for container (this overrides the default set).\n\nConflicts with options 'CapAdd' and 'CapDrop'\"\n",
+							"description": "A list of kernel capabilities to be available for container (this\noverrides the default set).\n\nConflicts with options 'CapAdd' and 'CapDrop'\"\n",
 							"items": {
 								"type": "string"
 							}
 						},
 						"CapAdd": {
 							"type": "array",
-							"description": "A list of kernel capabilities to add to the container. Conflicts with option 'Capabilities'",
+							"description": "A list of kernel capabilities to add to the container. Conflicts\nwith option 'Capabilities'.\n",
 							"items": {
 								"type": "string"
 							}
 						},
 						"CapDrop": {
 							"type": "array",
-							"description": "A list of kernel capabilities to drop from the container. Conflicts with option 'Capabilities'",
+							"description": "A list of kernel capabilities to drop from the container. Conflicts\nwith option 'Capabilities'.\n",
 							"items": {
 								"type": "string"
 							}
@@ -854,14 +854,14 @@ module.exports = {
 						},
 						"ExtraHosts": {
 							"type": "array",
-							"description": "A list of hostnames/IP mappings to add to the container's `/etc/hosts` file. Specified in the form `[\"hostname:IP\"]`.\n",
+							"description": "A list of hostnames/IP mappings to add to the container's `/etc/hosts`\nfile. Specified in the form `[\"hostname:IP\"]`.\n",
 							"items": {
 								"type": "string"
 							}
 						},
 						"GroupAdd": {
 							"type": "array",
-							"description": "A list of additional groups that the container process will run as.",
+							"description": "A list of additional groups that the container process will run as.\n",
 							"items": {
 								"type": "string"
 							}
@@ -876,19 +876,19 @@ module.exports = {
 						},
 						"Links": {
 							"type": "array",
-							"description": "A list of links for the container in the form `container_name:alias`.",
+							"description": "A list of links for the container in the form `container_name:alias`.\n",
 							"items": {
 								"type": "string"
 							}
 						},
 						"OomScoreAdj": {
 							"type": "integer",
-							"description": "An integer value containing the score given to the container in order to tune OOM killer preferences.",
+							"description": "An integer value containing the score given to the container in\norder to tune OOM killer preferences.\n",
 							"example": 500
 						},
 						"PidMode": {
 							"type": "string",
-							"description": "Set the PID (Process) Namespace mode for the container. It can be either:\n\n- `\"container:<name|id>\"`: joins another container's PID namespace\n- `\"host\"`: use the host's PID namespace inside the container\n"
+							"description": "Set the PID (Process) Namespace mode for the container. It can be\neither:\n\n- `\"container:<name|id>\"`: joins another container's PID namespace\n- `\"host\"`: use the host's PID namespace inside the container\n"
 						},
 						"Privileged": {
 							"type": "boolean",
@@ -896,7 +896,7 @@ module.exports = {
 						},
 						"PublishAllPorts": {
 							"type": "boolean",
-							"description": "Allocates an ephemeral host port for all of a container's\nexposed ports.\n\nPorts are de-allocated when the container stops and allocated when the container starts.\nThe allocated port might be changed when restarting the container.\n\nThe port is selected from the ephemeral port range that depends on the kernel.\nFor example, on Linux the range is defined by `/proc/sys/net/ipv4/ip_local_port_range`.\n"
+							"description": "Allocates an ephemeral host port for all of a container's\nexposed ports.\n\nPorts are de-allocated when the container stops and allocated when\nthe container starts. The allocated port might be changed when\nrestarting the container.\n\nThe port is selected from the ephemeral port range that depends on\nthe kernel. For example, on Linux the range is defined by\n`/proc/sys/net/ipv4/ip_local_port_range`.\n"
 						},
 						"ReadonlyRootfs": {
 							"type": "boolean",
@@ -918,7 +918,7 @@ module.exports = {
 						},
 						"Tmpfs": {
 							"type": "object",
-							"description": "A map of container directories which should be replaced by tmpfs mounts, and their corresponding mount options. For example: `{ \"/run\": \"rw,noexec,nosuid,size=65536k\" }`.\n",
+							"description": "A map of container directories which should be replaced by tmpfs\nmounts, and their corresponding mount options. For example:\n\n```\n{ \"/run\": \"rw,noexec,nosuid,size=65536k\" }\n```\n",
 							"additionalProperties": {
 								"type": "string"
 							}
@@ -929,16 +929,16 @@ module.exports = {
 						},
 						"UsernsMode": {
 							"type": "string",
-							"description": "Sets the usernamespace mode for the container when usernamespace remapping option is enabled."
+							"description": "Sets the usernamespace mode for the container when usernamespace\nremapping option is enabled.\n"
 						},
 						"ShmSize": {
 							"type": "integer",
-							"description": "Size of `/dev/shm` in bytes. If omitted, the system uses 64MB.",
+							"description": "Size of `/dev/shm` in bytes. If omitted, the system uses 64MB.\n",
 							"minimum": 0
 						},
 						"Sysctls": {
 							"type": "object",
-							"description": "A list of kernel parameters (sysctls) to set in the container. For example: `{\"net.ipv4.ip_forward\": \"1\"}`\n",
+							"description": "A list of kernel parameters (sysctls) to set in the container.\nFor example:\n\n```\n{\"net.ipv4.ip_forward\": \"1\"}\n```\n",
 							"additionalProperties": {
 								"type": "string"
 							}
@@ -949,7 +949,7 @@ module.exports = {
 						},
 						"ConsoleSize": {
 							"type": "array",
-							"description": "Initial console size, as an `[height, width]` array. (Windows only)",
+							"description": "Initial console size, as an `[height, width]` array. (Windows only)\n",
 							"minItems": 2,
 							"maxItems": 2,
 							"items": {
@@ -959,7 +959,7 @@ module.exports = {
 						},
 						"Isolation": {
 							"type": "string",
-							"description": "Isolation technology of the container. (Windows only)",
+							"description": "Isolation technology of the container. (Windows only)\n",
 							"enum": [
 								"default",
 								"process",
@@ -968,14 +968,14 @@ module.exports = {
 						},
 						"MaskedPaths": {
 							"type": "array",
-							"description": "The list of paths to be masked inside the container (this overrides the default set of paths)",
+							"description": "The list of paths to be masked inside the container (this overrides\nthe default set of paths).\n",
 							"items": {
 								"type": "string"
 							}
 						},
 						"ReadonlyPaths": {
 							"type": "array",
-							"description": "The list of paths to be set as read-only inside the container (this overrides the default set of paths)",
+							"description": "The list of paths to be set as read-only inside the container\n(this overrides the default set of paths).\n",
 							"items": {
 								"type": "string"
 							}
@@ -1027,7 +1027,7 @@ module.exports = {
 					}
 				},
 				"Tty": {
-					"description": "Attach standard streams to a TTY, including `stdin` if it is not closed.",
+					"description": "Attach standard streams to a TTY, including `stdin` if it is not closed.\n",
 					"type": "boolean",
 					"default": false
 				},
@@ -1042,14 +1042,14 @@ module.exports = {
 					"default": false
 				},
 				"Env": {
-					"description": "A list of environment variables to set inside the container in the form `[\"VAR=value\", ...]`. A variable without `=` is removed from the environment, rather than to have an empty value.\n",
+					"description": "A list of environment variables to set inside the container in the\nform `[\"VAR=value\", ...]`. A variable without `=` is removed from the\nenvironment, rather than to have an empty value.\n",
 					"type": "array",
 					"items": {
 						"type": "string"
 					}
 				},
 				"Cmd": {
-					"description": "Command to run specified as a string or an array of strings.",
+					"description": "Command to run specified as a string or an array of strings.\n",
 					"type": "array",
 					"items": {
 						"type": "string"
@@ -1063,11 +1063,11 @@ module.exports = {
 					"type": "boolean"
 				},
 				"Image": {
-					"description": "The name of the image to use when creating the container",
+					"description": "The name of the image to use when creating the container/\n",
 					"type": "string"
 				},
 				"Volumes": {
-					"description": "An object mapping mount point paths inside the container to empty objects.",
+					"description": "An object mapping mount point paths inside the container to empty\nobjects.\n",
 					"type": "object",
 					"additionalProperties": {
 						"type": "object",
@@ -1082,7 +1082,7 @@ module.exports = {
 					"type": "string"
 				},
 				"Entrypoint": {
-					"description": "The entry point for the container as a string or an array of strings.\n\nIf the array consists of exactly one empty string (`[\"\"]`) then the entry point is reset to system default (i.e., the entry point used by docker when there is no `ENTRYPOINT` instruction in the `Dockerfile`).\n",
+					"description": "The entry point for the container as a string or an array of strings.\n\nIf the array consists of exactly one empty string (`[\"\"]`) then the\nentry point is reset to system default (i.e., the entry point used by\ndocker when there is no `ENTRYPOINT` instruction in the `Dockerfile`).\n",
 					"type": "array",
 					"items": {
 						"type": "string"
@@ -1097,7 +1097,7 @@ module.exports = {
 					"type": "string"
 				},
 				"OnBuild": {
-					"description": "`ONBUILD` metadata that were defined in the image's `Dockerfile`.",
+					"description": "`ONBUILD` metadata that were defined in the image's `Dockerfile`.\n",
 					"type": "array",
 					"items": {
 						"type": "string"
@@ -1111,7 +1111,7 @@ module.exports = {
 					}
 				},
 				"StopSignal": {
-					"description": "Signal to stop a container as a string or unsigned integer.",
+					"description": "Signal to stop a container as a string or unsigned integer.\n",
 					"type": "string",
 					"default": "SIGTERM"
 				},
@@ -1121,10 +1121,45 @@ module.exports = {
 					"default": 10
 				},
 				"Shell": {
-					"description": "Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell.",
+					"description": "Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell.\n",
 					"type": "array",
 					"items": {
 						"type": "string"
+					}
+				}
+			}
+		},
+		"NetworkingConfig": {
+			"description": "NetworkingConfig represents the container's networking configuration for\neach of its interfaces.\nIt is used for the networking configs specified in the `docker create`\nand `docker network connect` commands.\n",
+			"type": "object",
+			"properties": {
+				"EndpointsConfig": {
+					"description": "A mapping of network name to endpoint configuration for that network.\n",
+					"type": "object",
+					"additionalProperties": {
+						"$ref": "#/definitions/EndpointSettings"
+					}
+				}
+			},
+			"example": {
+				"EndpointsConfig": {
+					"isolated_nw": {
+						"IPAMConfig": {
+							"IPv4Address": "172.20.30.33",
+							"IPv6Address": "2001:db8:abcd::3033",
+							"LinkLocalIPs": [
+								"169.254.34.68",
+								"fe80::3468"
+							]
+						},
+						"Links": [
+							"container_1",
+							"container_2"
+						],
+						"Aliases": [
+							"server_x",
+							"server_y"
+						]
 					}
 				}
 			}
@@ -1603,7 +1638,7 @@ module.exports = {
 				},
 				"Scope": {
 					"type": "string",
-					"description": "The level at which the volume exists. Either `global` for cluster-wide, or `local` for machine level.",
+					"description": "The level at which the volume exists. Either `global` for cluster-wide,\nor `local` for machine level.\n",
 					"default": "local",
 					"x-nullable": false,
 					"enum": [
@@ -1613,7 +1648,7 @@ module.exports = {
 				},
 				"Options": {
 					"type": "object",
-					"description": "The driver specific options used when creating the volume.",
+					"description": "The driver specific options used when creating the volume.\n",
 					"additionalProperties": {
 						"type": "string"
 					}
@@ -1764,7 +1799,7 @@ module.exports = {
 					"default": "default"
 				},
 				"Config": {
-					"description": "List of IPAM configuration options, specified as a map: `{\"Subnet\": <CIDR>, \"IPRange\": <CIDR>, \"Gateway\": <IP address>, \"AuxAddress\": <device_name:IP address>}`",
+					"description": "List of IPAM configuration options, specified as a map:\n\n```\n{\"Subnet\": <CIDR>, \"IPRange\": <CIDR>, \"Gateway\": <IP address>, \"AuxAddress\": <device_name:IP address>}\n```\n",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -1853,14 +1888,21 @@ module.exports = {
 					"type": "boolean"
 				},
 				"Size": {
+					"description": "Amount of disk space used by the build cache (in bytes).\n",
 					"type": "integer"
 				},
 				"CreatedAt": {
-					"type": "integer"
+					"description": "Date and time at which the build cache was created in\n[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.\n",
+					"type": "string",
+					"format": "dateTime",
+					"example": "2016-08-18T10:44:24.496525531Z"
 				},
 				"LastUsedAt": {
-					"type": "integer",
-					"x-nullable": true
+					"description": "Date and time at which the build cache was last used in\n[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.\n",
+					"type": "string",
+					"format": "dateTime",
+					"x-nullable": true,
+					"example": "2017-08-09T07:09:37.632105588Z"
 				},
 				"UsageCount": {
 					"type": "integer"
@@ -2529,7 +2571,7 @@ module.exports = {
 			}
 		},
 		"ObjectVersion": {
-			"description": "The version number of the object such as node, service, etc. This is needed to avoid conflicting writes.\nThe client must send the version number along with the modified specification when updating these objects.\nThis approach ensures safe concurrency and determinism in that the change on the object\nmay not be applied if the version number has changed from the last read. In other words,\nif two update requests specify the same base version, only one of the requests can succeed.\nAs a result, two separate update requests that happen at the same time will not\nunintentionally overwrite each other.\n",
+			"description": "The version number of the object such as node, service, etc. This is needed\nto avoid conflicting writes. The client must send the version number along\nwith the modified specification when updating these objects.\n\nThis approach ensures safe concurrency and determinism in that the change\non the object may not be applied if the version number has changed from the\nlast read. In other words, if two update requests specify the same base\nversion, only one of the requests can succeed. As a result, two separate\nupdate requests that happen at the same time will not unintentionally\noverwrite each other.\n",
 			"type": "object",
 			"properties": {
 				"Index": {
@@ -2765,19 +2807,19 @@ module.exports = {
 			}
 		},
 		"TLSInfo": {
-			"description": "Information about the issuer of leaf TLS certificates and the trusted root CA certificate",
+			"description": "Information about the issuer of leaf TLS certificates and the trusted root\nCA certificate.\n",
 			"type": "object",
 			"properties": {
 				"TrustRoot": {
-					"description": "The root CA certificate(s) that are used to validate leaf TLS certificates",
+					"description": "The root CA certificate(s) that are used to validate leaf TLS\ncertificates.\n",
 					"type": "string"
 				},
 				"CertIssuerSubject": {
-					"description": "The base64-url-safe-encoded raw subject bytes of the issuer",
+					"description": "The base64-url-safe-encoded raw subject bytes of the issuer.",
 					"type": "string"
 				},
 				"CertIssuerPublicKey": {
-					"description": "The base64-url-safe-encoded raw public key bytes of the issuer",
+					"description": "The base64-url-safe-encoded raw public key bytes of the issuer.\n",
 					"type": "string"
 				}
 			},
@@ -2872,7 +2914,7 @@ module.exports = {
 					"x-nullable": true,
 					"properties": {
 						"TaskHistoryRetentionLimit": {
-							"description": "The number of historic tasks to keep per instance or node. If negative, never remove completed or failed tasks.",
+							"description": "The number of historic tasks to keep per instance or node. If\nnegative, never remove completed or failed tasks.\n",
 							"type": "integer",
 							"format": "int64",
 							"example": 10
@@ -2890,23 +2932,23 @@ module.exports = {
 							"example": 10000
 						},
 						"KeepOldSnapshots": {
-							"description": "The number of snapshots to keep beyond the current snapshot.",
+							"description": "The number of snapshots to keep beyond the current snapshot.\n",
 							"type": "integer",
 							"format": "uint64"
 						},
 						"LogEntriesForSlowFollowers": {
-							"description": "The number of log entries to keep around to sync up slow followers after a snapshot is created.",
+							"description": "The number of log entries to keep around to sync up slow followers\nafter a snapshot is created.\n",
 							"type": "integer",
 							"format": "uint64",
 							"example": 500
 						},
 						"ElectionTick": {
-							"description": "The number of ticks that a follower will wait for a message from the leader before becoming a candidate and starting an election. `ElectionTick` must be greater than `HeartbeatTick`.\n\nA tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed.\n",
+							"description": "The number of ticks that a follower will wait for a message from\nthe leader before becoming a candidate and starting an election.\n`ElectionTick` must be greater than `HeartbeatTick`.\n\nA tick currently defaults to one second, so these translate\ndirectly to seconds currently, but this is NOT guaranteed.\n",
 							"type": "integer",
 							"example": 3
 						},
 						"HeartbeatTick": {
-							"description": "The number of ticks between heartbeats. Every HeartbeatTick ticks, the leader will send a heartbeat to the followers.\n\nA tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed.\n",
+							"description": "The number of ticks between heartbeats. Every HeartbeatTick ticks,\nthe leader will send a heartbeat to the followers.\n\nA tick currently defaults to one second, so these translate\ndirectly to seconds currently, but this is NOT guaranteed.\n",
 							"type": "integer",
 							"example": 1
 						}
@@ -2918,7 +2960,7 @@ module.exports = {
 					"x-nullable": true,
 					"properties": {
 						"HeartbeatPeriod": {
-							"description": "The delay for an agent to send a heartbeat to the dispatcher.",
+							"description": "The delay for an agent to send a heartbeat to the dispatcher.\n",
 							"type": "integer",
 							"format": "int64",
 							"example": 5000000000
@@ -2937,13 +2979,13 @@ module.exports = {
 							"example": 7776000000000000
 						},
 						"ExternalCAs": {
-							"description": "Configuration for forwarding signing requests to an external certificate authority.",
+							"description": "Configuration for forwarding signing requests to an external\ncertificate authority.\n",
 							"type": "array",
 							"items": {
 								"type": "object",
 								"properties": {
 									"Protocol": {
-										"description": "Protocol for communication with the external CA (currently only `cfssl` is supported).",
+										"description": "Protocol for communication with the external CA (currently\nonly `cfssl` is supported).\n",
 										"type": "string",
 										"enum": [
 											"cfssl"
@@ -2951,33 +2993,33 @@ module.exports = {
 										"default": "cfssl"
 									},
 									"URL": {
-										"description": "URL where certificate signing requests should be sent.",
+										"description": "URL where certificate signing requests should be sent.\n",
 										"type": "string"
 									},
 									"Options": {
-										"description": "An object with key/value pairs that are interpreted as protocol-specific options for the external CA driver.",
+										"description": "An object with key/value pairs that are interpreted as\nprotocol-specific options for the external CA driver.\n",
 										"type": "object",
 										"additionalProperties": {
 											"type": "string"
 										}
 									},
 									"CACert": {
-										"description": "The root CA certificate (in PEM format) this external CA uses to issue TLS certificates (assumed to be to the current swarm root CA certificate if not provided).",
+										"description": "The root CA certificate (in PEM format) this external CA uses\nto issue TLS certificates (assumed to be to the current swarm\nroot CA certificate if not provided).\n",
 										"type": "string"
 									}
 								}
 							}
 						},
 						"SigningCACert": {
-							"description": "The desired signing CA certificate for all swarm node TLS leaf certificates, in PEM format.",
+							"description": "The desired signing CA certificate for all swarm node TLS leaf\ncertificates, in PEM format.\n",
 							"type": "string"
 						},
 						"SigningCAKey": {
-							"description": "The desired signing CA key for all swarm node TLS leaf certificates, in PEM format.",
+							"description": "The desired signing CA key for all swarm node TLS leaf certificates,\nin PEM format.\n",
 							"type": "string"
 						},
 						"ForceRotate": {
-							"description": "An integer whose purpose is to force swarm to generate a new signing CA certificate and key, if none have been specified in `SigningCACert` and `SigningCAKey`",
+							"description": "An integer whose purpose is to force swarm to generate a new\nsigning CA certificate and key, if none have been specified in\n`SigningCACert` and `SigningCAKey`\n",
 							"format": "uint64",
 							"type": "integer"
 						}
@@ -2988,7 +3030,7 @@ module.exports = {
 					"type": "object",
 					"properties": {
 						"AutoLockManagers": {
-							"description": "If set, generate a key and use it to lock data stored on the managers.",
+							"description": "If set, generate a key and use it to lock data stored on the\nmanagers.\n",
 							"type": "boolean",
 							"example": false
 						}
@@ -3056,7 +3098,7 @@ module.exports = {
 					"$ref": "#/definitions/TLSInfo"
 				},
 				"RootRotationInProgress": {
-					"description": "Whether there is currently a root CA rotation in progress for the swarm",
+					"description": "Whether there is currently a root CA rotation in progress for the swarm\n",
 					"type": "boolean",
 					"example": false
 				},
@@ -3068,7 +3110,7 @@ module.exports = {
 					"example": 4789
 				},
 				"DefaultAddrPool": {
-					"description": "Default Address Pool specifies default subnet pools for global scope networks.\n",
+					"description": "Default Address Pool specifies default subnet pools for global scope\nnetworks.\n",
 					"type": "array",
 					"items": {
 						"type": "string",
@@ -3080,7 +3122,7 @@ module.exports = {
 					}
 				},
 				"SubnetSize": {
-					"description": "SubnetSize specifies the subnet size of the networks created from the default subnet pool\n",
+					"description": "SubnetSize specifies the subnet size of the networks created from the\ndefault subnet pool.\n",
 					"type": "integer",
 					"format": "uint32",
 					"maximum": 29,
@@ -3144,7 +3186,7 @@ module.exports = {
 						"PluginPrivilege": {
 							"type": "array",
 							"items": {
-								"description": "Describes a permission accepted by the user upon installing the plugin.",
+								"description": "Describes a permission accepted by the user upon installing the\nplugin.\n",
 								"type": "object",
 								"properties": {
 									"Name": {
@@ -3194,11 +3236,11 @@ module.exports = {
 							}
 						},
 						"Hostname": {
-							"description": "The hostname to use for the container, as a valid RFC 1123 hostname.",
+							"description": "The hostname to use for the container, as a valid\n[RFC 1123](https://tools.ietf.org/html/rfc1123) hostname.\n",
 							"type": "string"
 						},
 						"Env": {
-							"description": "A list of environment variables in the form `VAR=value`.",
+							"description": "A list of environment variables in the form `VAR=value`.\n",
 							"type": "array",
 							"items": {
 								"type": "string"
@@ -3214,7 +3256,7 @@ module.exports = {
 						},
 						"Groups": {
 							"type": "array",
-							"description": "A list of additional groups that the container process will run as.",
+							"description": "A list of additional groups that the container process will run as.\n",
 							"items": {
 								"type": "string"
 							}
@@ -3230,16 +3272,16 @@ module.exports = {
 										"Config": {
 											"type": "string",
 											"example": "0bt9dmxjvjiqermk6xrop3ekq",
-											"description": "Load credential spec from a Swarm Config with the given ID.\nThe specified config must also be present in the Configs field with the Runtime property set.\n\n<p><br /></p>\n\n\n> **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, and `CredentialSpec.Config` are mutually exclusive.\n"
+											"description": "Load credential spec from a Swarm Config with the given ID.\nThe specified config must also be present in the Configs\nfield with the Runtime property set.\n\n<p><br /></p>\n\n\n> **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`,\n> and `CredentialSpec.Config` are mutually exclusive.\n"
 										},
 										"File": {
 											"type": "string",
 											"example": "spec.json",
-											"description": "Load credential spec from this file. The file is read by the daemon, and must be present in the\n`CredentialSpecs` subdirectory in the docker data directory, which defaults to\n`C:\\ProgramData\\Docker\\` on Windows.\n\nFor example, specifying `spec.json` loads `C:\\ProgramData\\Docker\\CredentialSpecs\\spec.json`.\n\n<p><br /></p>\n\n> **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, and `CredentialSpec.Config` are mutually exclusive.\n"
+											"description": "Load credential spec from this file. The file is read by\nthe daemon, and must be present in the `CredentialSpecs`\nsubdirectory in the docker data directory, which defaults\nto `C:\\ProgramData\\Docker\\` on Windows.\n\nFor example, specifying `spec.json` loads\n`C:\\ProgramData\\Docker\\CredentialSpecs\\spec.json`.\n\n<p><br /></p>\n\n> **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`,\n> and `CredentialSpec.Config` are mutually exclusive.\n"
 										},
 										"Registry": {
 											"type": "string",
-											"description": "Load credential spec from this value in the Windows registry. The specified registry value must be\nlocated in:\n\n`HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Virtualization\\Containers\\CredentialSpecs`\n\n<p><br /></p>\n\n\n> **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, and `CredentialSpec.Config` are mutually exclusive.\n"
+											"description": "Load credential spec from this value in the Windows\nregistry. The specified registry value must be located in:\n\n`HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Virtualization\\Containers\\CredentialSpecs`\n\n<p><br /></p>\n\n\n> **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`,\n> and `CredentialSpec.Config` are mutually exclusive.\n"
 										}
 									}
 								},
@@ -3284,7 +3326,7 @@ module.exports = {
 							"type": "boolean"
 						},
 						"Mounts": {
-							"description": "Specification for mounts to be added to containers created as part of the service.",
+							"description": "Specification for mounts to be added to containers created as part\nof the service.\n",
 							"type": "array",
 							"items": {
 								"$ref": "#/definitions/Mount"
@@ -3295,7 +3337,7 @@ module.exports = {
 							"type": "string"
 						},
 						"StopGracePeriod": {
-							"description": "Amount of time to wait for the container to terminate before forcefully killing it.",
+							"description": "Amount of time to wait for the container to terminate before\nforcefully killing it.\n",
 							"type": "integer",
 							"format": "int64"
 						},
@@ -3310,7 +3352,7 @@ module.exports = {
 							}
 						},
 						"DNSConfig": {
-							"description": "Specification for DNS related configurations in resolver configuration file (`resolv.conf`).",
+							"description": "Specification for DNS related configurations in resolver configuration\nfile (`resolv.conf`).\n",
 							"type": "object",
 							"properties": {
 								"Nameservers": {
@@ -3328,7 +3370,7 @@ module.exports = {
 									}
 								},
 								"Options": {
-									"description": "A list of internal resolver variables to be modified (e.g., `debug`, `ndots:3`, etc.).",
+									"description": "A list of internal resolver variables to be modified (e.g.,\n`debug`, `ndots:3`, etc.).\n",
 									"type": "array",
 									"items": {
 										"type": "string"
@@ -3337,17 +3379,17 @@ module.exports = {
 							}
 						},
 						"Secrets": {
-							"description": "Secrets contains references to zero or more secrets that will be exposed to the service.",
+							"description": "Secrets contains references to zero or more secrets that will be\nexposed to the service.\n",
 							"type": "array",
 							"items": {
 								"type": "object",
 								"properties": {
 									"File": {
-										"description": "File represents a specific target that is backed by a file.",
+										"description": "File represents a specific target that is backed by a file.\n",
 										"type": "object",
 										"properties": {
 											"Name": {
-												"description": "Name represents the final filename in the filesystem.",
+												"description": "Name represents the final filename in the filesystem.\n",
 												"type": "string"
 											},
 											"UID": {
@@ -3366,18 +3408,18 @@ module.exports = {
 										}
 									},
 									"SecretID": {
-										"description": "SecretID represents the ID of the specific secret that we're referencing.",
+										"description": "SecretID represents the ID of the specific secret that we're\nreferencing.\n",
 										"type": "string"
 									},
 									"SecretName": {
-										"description": "SecretName is the name of the secret that this references, but this is just provided for\nlookup/display purposes. The secret in the reference will be identified by its ID.\n",
+										"description": "SecretName is the name of the secret that this references,\nbut this is just provided for lookup/display purposes. The\nsecret in the reference will be identified by its ID.\n",
 										"type": "string"
 									}
 								}
 							}
 						},
 						"Configs": {
-							"description": "Configs contains references to zero or more configs that will be exposed to the service.",
+							"description": "Configs contains references to zero or more configs that will be\nexposed to the service.\n",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -3387,7 +3429,7 @@ module.exports = {
 										"type": "object",
 										"properties": {
 											"Name": {
-												"description": "Name represents the final filename in the filesystem.",
+												"description": "Name represents the final filename in the filesystem.\n",
 												"type": "string"
 											},
 											"UID": {
@@ -3406,15 +3448,15 @@ module.exports = {
 										}
 									},
 									"Runtime": {
-										"description": "Runtime represents a target that is not mounted into the container but is used by the task\n\n<p><br /><p>\n\n> **Note**: `Configs.File` and `Configs.Runtime` are mutually exclusive\n",
+										"description": "Runtime represents a target that is not mounted into the\ncontainer but is used by the task\n\n<p><br /><p>\n\n> **Note**: `Configs.File` and `Configs.Runtime` are mutually\n> exclusive\n",
 										"type": "object"
 									},
 									"ConfigID": {
-										"description": "ConfigID represents the ID of the specific config that we're referencing.",
+										"description": "ConfigID represents the ID of the specific config that we're\nreferencing.\n",
 										"type": "string"
 									},
 									"ConfigName": {
-										"description": "ConfigName is the name of the config that this references, but this is just provided for\nlookup/display purposes. The config in the reference will be identified by its ID.\n",
+										"description": "ConfigName is the name of the config that this references,\nbut this is just provided for lookup/display purposes. The\nconfig in the reference will be identified by its ID.\n",
 										"type": "string"
 									}
 								}
@@ -3422,7 +3464,7 @@ module.exports = {
 						},
 						"Isolation": {
 							"type": "string",
-							"description": "Isolation technology of the containers running the service. (Windows only)",
+							"description": "Isolation technology of the containers running the service.\n(Windows only)\n",
 							"enum": [
 								"default",
 								"process",
@@ -3430,7 +3472,7 @@ module.exports = {
 							]
 						},
 						"Init": {
-							"description": "Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used.",
+							"description": "Run an init inside the container that forwards signals and reaps\nprocesses. This field is omitted if empty, and the default (as\nconfigured on the daemon) is used.\n",
 							"type": "boolean",
 							"x-nullable": true
 						},
@@ -3454,7 +3496,7 @@ module.exports = {
 					}
 				},
 				"Resources": {
-					"description": "Resource requirements which apply to each individual container created as part of the service.",
+					"description": "Resource requirements which apply to each individual container created\nas part of the service.\n",
 					"type": "object",
 					"properties": {
 						"Limits": {
@@ -3468,7 +3510,7 @@ module.exports = {
 					}
 				},
 				"RestartPolicy": {
-					"description": "Specification for the restart policy which applies to containers created as part of this service.",
+					"description": "Specification for the restart policy which applies to containers\ncreated as part of this service.\n",
 					"type": "object",
 					"properties": {
 						"Condition": {
@@ -3486,13 +3528,13 @@ module.exports = {
 							"format": "int64"
 						},
 						"MaxAttempts": {
-							"description": "Maximum attempts to restart a given container before giving up (default value is 0, which is ignored).",
+							"description": "Maximum attempts to restart a given container before giving up\n(default value is 0, which is ignored).\n",
 							"type": "integer",
 							"format": "int64",
 							"default": 0
 						},
 						"Window": {
-							"description": "Windows is the time window used to evaluate the restart policy (default value is 0, which is unbounded).",
+							"description": "Windows is the time window used to evaluate the restart policy\n(default value is 0, which is unbounded).\n",
 							"type": "integer",
 							"format": "int64",
 							"default": 0
@@ -3517,7 +3559,7 @@ module.exports = {
 							]
 						},
 						"Preferences": {
-							"description": "Preferences provide a way to make the scheduler aware of factors such as topology. They are provided in order from highest to lowest precedence.",
+							"description": "Preferences provide a way to make the scheduler aware of factors\nsuch as topology. They are provided in order from highest to\nlowest precedence.\n",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -3526,7 +3568,7 @@ module.exports = {
 										"type": "object",
 										"properties": {
 											"SpreadDescriptor": {
-												"description": "label descriptor, such as engine.labels.az",
+												"description": "label descriptor, such as `engine.labels.az`.\n",
 												"type": "string"
 											}
 										}
@@ -3547,7 +3589,7 @@ module.exports = {
 							]
 						},
 						"MaxReplicas": {
-							"description": "Maximum number of replicas for per node (default value is 0, which is unlimited)",
+							"description": "Maximum number of replicas for per node (default value is 0, which\nis unlimited)\n",
 							"type": "integer",
 							"format": "int64",
 							"default": 0
@@ -3562,11 +3604,11 @@ module.exports = {
 					}
 				},
 				"ForceUpdate": {
-					"description": "A counter that triggers an update even if no relevant parameters have been changed.",
+					"description": "A counter that triggers an update even if no relevant parameters have\nbeen changed.\n",
 					"type": "integer"
 				},
 				"Runtime": {
-					"description": "Runtime is the type of runtime specified for the task executor.",
+					"description": "Runtime is the type of runtime specified for the task executor.\n",
 					"type": "string"
 				},
 				"Networks": {
@@ -3577,7 +3619,7 @@ module.exports = {
 					}
 				},
 				"LogDriver": {
-					"description": "Specifies the log driver to use for tasks created from this spec. If not present, the default one for the swarm will be used, finally falling back to the engine default if not specified.",
+					"description": "Specifies the log driver to use for tasks created from this spec. If\nnot present, the default one for the swarm will be used, finally\nfalling back to the engine default if not specified.\n",
 					"type": "object",
 					"properties": {
 						"Name": {
@@ -3839,7 +3881,7 @@ module.exports = {
 					"type": "object",
 					"properties": {
 						"Parallelism": {
-							"description": "Maximum number of tasks to be updated in one iteration (0 means unlimited parallelism).",
+							"description": "Maximum number of tasks to be updated in one iteration (0 means\nunlimited parallelism).\n",
 							"type": "integer",
 							"format": "int64"
 						},
@@ -3849,7 +3891,7 @@ module.exports = {
 							"format": "int64"
 						},
 						"FailureAction": {
-							"description": "Action to take if an updated task fails to run, or stops running during the update.",
+							"description": "Action to take if an updated task fails to run, or stops running\nduring the update.\n",
 							"type": "string",
 							"enum": [
 								"continue",
@@ -3858,17 +3900,17 @@ module.exports = {
 							]
 						},
 						"Monitor": {
-							"description": "Amount of time to monitor each updated task for failures, in nanoseconds.",
+							"description": "Amount of time to monitor each updated task for failures, in\nnanoseconds.\n",
 							"type": "integer",
 							"format": "int64"
 						},
 						"MaxFailureRatio": {
-							"description": "The fraction of tasks that may fail during an update before the failure action is invoked, specified as a floating point number between 0 and 1.",
+							"description": "The fraction of tasks that may fail during an update before the\nfailure action is invoked, specified as a floating point number\nbetween 0 and 1.\n",
 							"type": "number",
 							"default": 0
 						},
 						"Order": {
-							"description": "The order of operations when rolling out an updated task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down.",
+							"description": "The order of operations when rolling out an updated task. Either\nthe old task is shut down before the new task is started, or the\nnew task is started before the old task is shut down.\n",
 							"type": "string",
 							"enum": [
 								"stop-first",
@@ -3882,17 +3924,17 @@ module.exports = {
 					"type": "object",
 					"properties": {
 						"Parallelism": {
-							"description": "Maximum number of tasks to be rolled back in one iteration (0 means unlimited parallelism).",
+							"description": "Maximum number of tasks to be rolled back in one iteration (0 means\nunlimited parallelism).\n",
 							"type": "integer",
 							"format": "int64"
 						},
 						"Delay": {
-							"description": "Amount of time between rollback iterations, in nanoseconds.",
+							"description": "Amount of time between rollback iterations, in nanoseconds.\n",
 							"type": "integer",
 							"format": "int64"
 						},
 						"FailureAction": {
-							"description": "Action to take if an rolled back task fails to run, or stops running during the rollback.",
+							"description": "Action to take if an rolled back task fails to run, or stops\nrunning during the rollback.\n",
 							"type": "string",
 							"enum": [
 								"continue",
@@ -3900,17 +3942,17 @@ module.exports = {
 							]
 						},
 						"Monitor": {
-							"description": "Amount of time to monitor each rolled back task for failures, in nanoseconds.",
+							"description": "Amount of time to monitor each rolled back task for failures, in\nnanoseconds.\n",
 							"type": "integer",
 							"format": "int64"
 						},
 						"MaxFailureRatio": {
-							"description": "The fraction of tasks that may fail during a rollback before the failure action is invoked, specified as a floating point number between 0 and 1.",
+							"description": "The fraction of tasks that may fail during a rollback before the\nfailure action is invoked, specified as a floating point number\nbetween 0 and 1.\n",
 							"type": "number",
 							"default": 0
 						},
 						"Order": {
-							"description": "The order of operations when rolling back a task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down.",
+							"description": "The order of operations when rolling back a task. Either the old\ntask is shut down before the new task is started, or the new task\nis started before the old task is shut down.\n",
 							"type": "string",
 							"enum": [
 								"stop-first",
@@ -3979,7 +4021,7 @@ module.exports = {
 					"default": "vip"
 				},
 				"Ports": {
-					"description": "List of exposed ports that this service is accessible on from the outside. Ports can only be provided if `vip` resolution mode is used.",
+					"description": "List of exposed ports that this service is accessible on from the\noutside. Ports can only be provided if `vip` resolution mode is used.\n",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/EndpointPortConfig"
@@ -4315,12 +4357,12 @@ module.exports = {
 					}
 				},
 				"Data": {
-					"description": "Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-3.2))\ndata to store as secret.\n\nThis field is only used to _create_ a secret, and is not returned by\nother endpoints.\n",
+					"description": "Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-5))\ndata to store as secret.\n\nThis field is only used to _create_ a secret, and is not returned by\nother endpoints.\n",
 					"type": "string",
 					"example": ""
 				},
 				"Driver": {
-					"description": "Name of the secrets driver used to fetch the secret's value from an external secret store",
+					"description": "Name of the secrets driver used to fetch the secret's value from an\nexternal secret store.\n",
 					"$ref": "#/definitions/Driver"
 				},
 				"Templating": {
@@ -4369,7 +4411,7 @@ module.exports = {
 					}
 				},
 				"Data": {
-					"description": "Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-3.2))\nconfig data.\n",
+					"description": "Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-5))\nconfig data.\n",
 					"type": "string"
 				},
 				"Templating": {
@@ -4434,7 +4476,7 @@ module.exports = {
 					"example": false
 				},
 				"OOMKilled": {
-					"description": "Whether this container has been killed because it ran out of memory.",
+					"description": "Whether this container has been killed because it ran out of memory.\n",
 					"type": "boolean",
 					"example": false
 				},
@@ -4468,6 +4510,103 @@ module.exports = {
 				"Health": {
 					"x-nullable": true,
 					"$ref": "#/definitions/Health"
+				}
+			}
+		},
+		"SystemVersion": {
+			"type": "object",
+			"description": "Response of Engine API: GET \"/version\"\n",
+			"properties": {
+				"Platform": {
+					"type": "object",
+					"required": [
+						"Name"
+					],
+					"properties": {
+						"Name": {
+							"type": "string"
+						}
+					}
+				},
+				"Components": {
+					"type": "array",
+					"description": "Information about system components\n",
+					"items": {
+						"type": "object",
+						"x-go-name": "ComponentVersion",
+						"required": [
+							"Name",
+							"Version"
+						],
+						"properties": {
+							"Name": {
+								"description": "Name of the component\n",
+								"type": "string",
+								"example": "Engine"
+							},
+							"Version": {
+								"description": "Version of the component\n",
+								"type": "string",
+								"x-nullable": false,
+								"example": "19.03.12"
+							},
+							"Details": {
+								"description": "Key/value pairs of strings with additional information about the\ncomponent. These values are intended for informational purposes\nonly, and their content is not defined, and not part of the API\nspecification.\n\nThese messages can be printed by the client as information to the user.\n",
+								"type": "object",
+								"x-nullable": true
+							}
+						}
+					}
+				},
+				"Version": {
+					"description": "The version of the daemon",
+					"type": "string",
+					"example": "19.03.12"
+				},
+				"ApiVersion": {
+					"description": "The default (and highest) API version that is supported by the daemon\n",
+					"type": "string",
+					"example": "1.40"
+				},
+				"MinAPIVersion": {
+					"description": "The minimum API version that is supported by the daemon\n",
+					"type": "string",
+					"example": "1.12"
+				},
+				"GitCommit": {
+					"description": "The Git commit of the source code that was used to build the daemon\n",
+					"type": "string",
+					"example": "48a66213fe"
+				},
+				"GoVersion": {
+					"description": "The version Go used to compile the daemon, and the version of the Go\nruntime in use.\n",
+					"type": "string",
+					"example": "go1.13.14"
+				},
+				"Os": {
+					"description": "The operating system that the daemon is running on (\"linux\" or \"windows\")\n",
+					"type": "string",
+					"example": "linux"
+				},
+				"Arch": {
+					"description": "The architecture that the daemon is running on\n",
+					"type": "string",
+					"example": "amd64"
+				},
+				"KernelVersion": {
+					"description": "The kernel version (`uname -r`) that the daemon is running on.\n\nThis field is omitted when empty.\n",
+					"type": "string",
+					"example": "4.19.76-linuxkit"
+				},
+				"Experimental": {
+					"description": "Indicates if the daemon is started with experimental features enabled.\n\nThis field is omitted when empty / false.\n",
+					"type": "boolean",
+					"example": true
+				},
+				"BuildTime": {
+					"description": "The date and time that the daemon was compiled.\n",
+					"type": "string",
+					"example": "2020-06-22T15:49:27.000000000+00:00"
 				}
 			}
 		},
@@ -4661,17 +4800,17 @@ module.exports = {
 					"example": true
 				},
 				"CpuCfsPeriod": {
-					"description": "Indicates if CPU CFS(Completely Fair Scheduler) period is supported by the host.",
+					"description": "Indicates if CPU CFS(Completely Fair Scheduler) period is supported by\nthe host.\n",
 					"type": "boolean",
 					"example": true
 				},
 				"CpuCfsQuota": {
-					"description": "Indicates if CPU CFS(Completely Fair Scheduler) quota is supported by the host.",
+					"description": "Indicates if CPU CFS(Completely Fair Scheduler) quota is supported by\nthe host.\n",
 					"type": "boolean",
 					"example": true
 				},
 				"CPUShares": {
-					"description": "Indicates if CPU Shares limiting is supported by the host.",
+					"description": "Indicates if CPU Shares limiting is supported by the host.\n",
 					"type": "boolean",
 					"example": true
 				},
@@ -4705,7 +4844,7 @@ module.exports = {
 					"example": true
 				},
 				"Debug": {
-					"description": "Indicates if the daemon is running in debug-mode / with debug-level logging enabled.",
+					"description": "Indicates if the daemon is running in debug-mode / with debug-level\nlogging enabled.\n",
 					"type": "boolean",
 					"example": true
 				},
@@ -5251,22 +5390,22 @@ module.exports = {
 			}
 		},
 		"NetworkAttachmentConfig": {
-			"description": "Specifies how a service should be attached to a particular network.",
+			"description": "Specifies how a service should be attached to a particular network.\n",
 			"type": "object",
 			"properties": {
 				"Target": {
-					"description": "The target network for attachment. Must be a network name or ID.",
+					"description": "The target network for attachment. Must be a network name or ID.\n",
 					"type": "string"
 				},
 				"Aliases": {
-					"description": "Discoverable alternate names for the service on this network.",
+					"description": "Discoverable alternate names for the service on this network.\n",
 					"type": "array",
 					"items": {
 						"type": "string"
 					}
 				},
 				"DriverOpts": {
-					"description": "Driver attachment options for the network target",
+					"description": "Driver attachment options for the network target.\n",
 					"type": "object",
 					"additionalProperties": {
 						"type": "string"
@@ -5279,7 +5418,7 @@ module.exports = {
 		"/containers/json": {
 			"get": {
 				"summary": "List containers",
-				"description": "Returns a list of containers. For details on the format, see [the inspect endpoint](#operation/ContainerInspect).\n\nNote that it uses a different, smaller representation of a container than inspecting a single container. For example,\nthe list of linked containers is not propagated .\n",
+				"description": "Returns a list of containers. For details on the format, see the\n[inspect endpoint](#operation/ContainerInspect).\n\nNote that it uses a different, smaller representation of a container\nthan inspecting a single container. For example, the list of linked\ncontainers is not propagated .\n",
 				"operationId": "ContainerList",
 				"produces": [
 					"application/json"
@@ -5288,27 +5427,27 @@ module.exports = {
 					{
 						"name": "all",
 						"in": "query",
-						"description": "Return all containers. By default, only running containers are shown",
+						"description": "Return all containers. By default, only running containers are shown.\n",
 						"type": "boolean",
 						"default": false
 					},
 					{
 						"name": "limit",
 						"in": "query",
-						"description": "Return this number of most recently created containers, including non-running ones.",
+						"description": "Return this number of most recently created containers, including\nnon-running ones.\n",
 						"type": "integer"
 					},
 					{
 						"name": "size",
 						"in": "query",
-						"description": "Return the size of container as fields `SizeRw` and `SizeRootFs`.",
+						"description": "Return the size of container as fields `SizeRw` and `SizeRootFs`.\n",
 						"type": "boolean",
 						"default": false
 					},
 					{
 						"name": "filters",
 						"in": "query",
-						"description": "Filters to process on the container list, encoded as JSON (a `map[string][]string`). For example, `{\"status\": [\"paused\"]}` will only return paused containers. Available filters:\n\n- `ancestor`=(`<image-name>[:<tag>]`, `<image id>`, or `<image@digest>`)\n- `before`=(`<container id>` or `<container name>`)\n- `expose`=(`<port>[/<proto>]`|`<startport-endport>/[<proto>]`)\n- `exited=<int>` containers with exit code of `<int>`\n- `health`=(`starting`|`healthy`|`unhealthy`|`none`)\n- `id=<ID>` a container's ID\n- `isolation=`(`default`|`process`|`hyperv`) (Windows daemon only)\n- `is-task=`(`true`|`false`)\n- `label=key` or `label=\"key=value\"` of a container label\n- `name=<name>` a container's name\n- `network`=(`<network id>` or `<network name>`)\n- `publish`=(`<port>[/<proto>]`|`<startport-endport>/[<proto>]`)\n- `since`=(`<container id>` or `<container name>`)\n- `status=`(`created`|`restarting`|`running`|`removing`|`paused`|`exited`|`dead`)\n- `volume`=(`<volume name>` or `<mount point destination>`)\n",
+						"description": "Filters to process on the container list, encoded as JSON (a\n`map[string][]string`). For example, `{\"status\": [\"paused\"]}` will\nonly return paused containers.\n\nAvailable filters:\n\n- `ancestor`=(`<image-name>[:<tag>]`, `<image id>`, or `<image@digest>`)\n- `before`=(`<container id>` or `<container name>`)\n- `expose`=(`<port>[/<proto>]`|`<startport-endport>/[<proto>]`)\n- `exited=<int>` containers with exit code of `<int>`\n- `health`=(`starting`|`healthy`|`unhealthy`|`none`)\n- `id=<ID>` a container's ID\n- `isolation=`(`default`|`process`|`hyperv`) (Windows daemon only)\n- `is-task=`(`true`|`false`)\n- `label=key` or `label=\"key=value\"` of a container label\n- `name=<name>` a container's name\n- `network`=(`<network id>` or `<network name>`)\n- `publish`=(`<port>[/<proto>]`|`<startport-endport>/[<proto>]`)\n- `since`=(`<container id>` or `<container name>`)\n- `status=`(`created`|`restarting`|`running`|`removing`|`paused`|`exited`|`dead`)\n- `volume`=(`<volume name>` or `<mount point destination>`)\n",
 						"type": "string"
 					}
 				],
@@ -5516,7 +5655,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "query",
-						"description": "Assign the specified name to the container. Must match `/?[a-zA-Z0-9][a-zA-Z0-9_.-]+`.",
+						"description": "Assign the specified name to the container. Must match\n`/?[a-zA-Z0-9][a-zA-Z0-9_.-]+`.\n",
 						"type": "string",
 						"pattern": "^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"
 					},
@@ -5536,17 +5675,7 @@ module.exports = {
 											"$ref": "#/definitions/HostConfig"
 										},
 										"NetworkingConfig": {
-											"description": "This container's networking configuration.",
-											"type": "object",
-											"properties": {
-												"EndpointsConfig": {
-													"description": "A mapping of network name to endpoint configuration for that network.",
-													"type": "object",
-													"additionalProperties": {
-														"$ref": "#/definitions/EndpointSettings"
-													}
-												}
-											}
+											"$ref": "#/definitions/NetworkingConfig"
 										}
 									}
 								}
@@ -5623,6 +5752,28 @@ module.exports = {
 									],
 									"BlkioDeviceWriteIOps": [
 										{}
+									],
+									"DeviceRequests": [
+										{
+											"Driver": "nvidia",
+											"Count": -1,
+											"DeviceIDs\"": [
+												"0",
+												"1",
+												"GPU-fef8089b-4820-abfc-e83e-94318197576e"
+											],
+											"Capabilities": [
+												[
+													"gpu",
+													"nvidia",
+													"compute"
+												]
+											],
+											"Options": {
+												"property1": "string",
+												"property2": "string"
+											}
+										}
 									],
 									"MemorySwappiness": 60,
 									"OomKillDisable": false,
@@ -5816,7 +5967,7 @@ module.exports = {
 									"$ref": "#/definitions/ContainerState"
 								},
 								"Image": {
-									"description": "The container's image",
+									"description": "The container's image ID",
 									"type": "string"
 								},
 								"ResolvConfPath": {
@@ -5871,7 +6022,7 @@ module.exports = {
 									"$ref": "#/definitions/GraphDriverData"
 								},
 								"SizeRw": {
-									"description": "The size of files that have been created or changed by this container.",
+									"description": "The size of files that have been created or changed by this\ncontainer.\n",
 									"type": "integer",
 									"format": "int64"
 								},
@@ -5974,6 +6125,28 @@ module.exports = {
 									"CpuRealtimePeriod": 1000000,
 									"CpuRealtimeRuntime": 10000,
 									"Devices": [],
+									"DeviceRequests": [
+										{
+											"Driver": "nvidia",
+											"Count": -1,
+											"DeviceIDs\"": [
+												"0",
+												"1",
+												"GPU-fef8089b-4820-abfc-e83e-94318197576e"
+											],
+											"Capabilities": [
+												[
+													"gpu",
+													"nvidia",
+													"compute"
+												]
+											],
+											"Options": {
+												"property1": "string",
+												"property2": "string"
+											}
+										}
+									],
 									"IpcMode": "",
 									"LxcConf": [],
 									"Memory": 0,
@@ -6125,7 +6298,7 @@ module.exports = {
 		"/containers/{id}/top": {
 			"get": {
 				"summary": "List processes running inside a container",
-				"description": "On Unix systems, this is done by running the `ps` command. This endpoint is not supported on Windows.",
+				"description": "On Unix systems, this is done by running the `ps` command. This endpoint\nis not supported on Windows.\n",
 				"operationId": "ContainerTop",
 				"responses": {
 					"200": {
@@ -6143,7 +6316,7 @@ module.exports = {
 									}
 								},
 								"Processes": {
-									"description": "Each process running in the container, where each is process is an array of values corresponding to the titles",
+									"description": "Each process running in the container, where each is process\nis an array of values corresponding to the titles.\n",
 									"type": "array",
 									"items": {
 										"type": "array",
@@ -6233,11 +6406,11 @@ module.exports = {
 		"/containers/{id}/logs": {
 			"get": {
 				"summary": "Get container logs",
-				"description": "Get `stdout` and `stderr` logs from a container.\n\nNote: This endpoint works only for containers with the `json-file` or `journald` logging driver.\n",
+				"description": "Get `stdout` and `stderr` logs from a container.\n\nNote: This endpoint works only for containers with the `json-file` or\n`journald` logging driver.\n",
 				"operationId": "ContainerLogs",
 				"responses": {
 					"200": {
-						"description": "logs returned as a stream in response body.\nFor the stream format, [see the documentation for the attach endpoint](#operation/ContainerAttach).\nNote that unlike the attach endpoint, the logs endpoint does not upgrade the connection and does not\nset Content-Type.\n",
+						"description": "logs returned as a stream in response body.\nFor the stream format, [see the documentation for the attach endpoint](#operation/ContainerAttach).\nNote that unlike the attach endpoint, the logs endpoint does not\nupgrade the connection and does not set Content-Type.\n",
 						"schema": {
 							"type": "string",
 							"format": "binary"
@@ -6314,7 +6487,7 @@ module.exports = {
 					{
 						"name": "tail",
 						"in": "query",
-						"description": "Only return this number of log lines from the end of the logs. Specify as an integer or `all` to output all log lines.",
+						"description": "Only return this number of log lines from the end of the logs.\nSpecify as an integer or `all` to output all log lines.\n",
 						"type": "string",
 						"default": "all"
 					}
@@ -6462,7 +6635,7 @@ module.exports = {
 		"/containers/{id}/stats": {
 			"get": {
 				"summary": "Get container stats based on resource usage",
-				"description": "This endpoint returns a live stream of a container’s resource usage\nstatistics.\n\nThe `precpu_stats` is the CPU statistic of the *previous* read, and is\nused to calculate the CPU usage percentage. It is not an exact copy\nof the `cpu_stats` field.\n\nIf either `precpu_stats.online_cpus` or `cpu_stats.online_cpus` is\nnil then for compatibility with older daemons the length of the\ncorresponding `cpu_usage.percpu_usage` array should be used.\n",
+				"description": "This endpoint returns a live stream of a container’s resource usage\nstatistics.\n\nThe `precpu_stats` is the CPU statistic of the *previous* read, and is\nused to calculate the CPU usage percentage. It is not an exact copy\nof the `cpu_stats` field.\n\nIf either `precpu_stats.online_cpus` or `cpu_stats.online_cpus` is\nnil then for compatibility with older daemons the length of the\ncorresponding `cpu_usage.percpu_usage` array should be used.\n\nTo calculate the values shown by the `stats` command of the docker cli tool\nthe following formulas can be used:\n* used_memory = `memory_stats.usage - memory_stats.stats.cache`\n* available_memory = `memory_stats.limit`\n* Memory usage % = `(used_memory / available_memory) * 100.0`\n* cpu_delta = `cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage`\n* system_cpu_delta = `cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage`\n* number_cpus = `lenght(cpu_stats.cpu_usage.percpu_usage)` or `cpu_stats.online_cpus`\n* CPU usage % = `(cpu_delta / system_cpu_delta) * number_cpus * 100.0`\n",
 				"operationId": "ContainerStats",
 				"produces": [
 					"application/json"
@@ -6611,7 +6784,7 @@ module.exports = {
 					{
 						"name": "stream",
 						"in": "query",
-						"description": "Stream the output. If false, the stats will be output once and then it will disconnect.",
+						"description": "Stream the output. If false, the stats will be output once and then\nit will disconnect.\n",
 						"type": "boolean",
 						"default": true
 					}
@@ -6665,13 +6838,13 @@ module.exports = {
 					{
 						"name": "h",
 						"in": "query",
-						"description": "Height of the tty session in characters",
+						"description": "Height of the TTY session in characters",
 						"type": "integer"
 					},
 					{
 						"name": "w",
 						"in": "query",
-						"description": "Width of the tty session in characters",
+						"description": "Width of the TTY session in characters",
 						"type": "integer"
 					}
 				],
@@ -6720,7 +6893,7 @@ module.exports = {
 					{
 						"name": "detachKeys",
 						"in": "query",
-						"description": "Override the key sequence for detaching a container. Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`.",
+						"description": "Override the key sequence for detaching a container. Format is a\nsingle character `[a-Z]` or `ctrl-<value>` where `<value>` is one\nof: `a-z`, `@`, `^`, `[`, `,` or `_`.\n",
 						"type": "string"
 					}
 				],
@@ -6827,7 +7000,7 @@ module.exports = {
 		"/containers/{id}/kill": {
 			"post": {
 				"summary": "Kill a container",
-				"description": "Send a POSIX signal to a container, defaulting to killing to the container.",
+				"description": "Send a POSIX signal to a container, defaulting to killing to the\ncontainer.\n",
 				"operationId": "ContainerKill",
 				"responses": {
 					"204": {
@@ -6886,7 +7059,7 @@ module.exports = {
 		"/containers/{id}/update": {
 			"post": {
 				"summary": "Update a container",
-				"description": "Change various configuration options of a container without having to recreate it.",
+				"description": "Change various configuration options of a container without having to\nrecreate it.\n",
 				"operationId": "ContainerUpdate",
 				"consumes": [
 					"application/json"
@@ -7037,7 +7210,7 @@ module.exports = {
 		"/containers/{id}/pause": {
 			"post": {
 				"summary": "Pause a container",
-				"description": "Use the freezer cgroup to suspend all processes in a container.\n\nTraditionally, when suspending a process the `SIGSTOP` signal is used, which is observable by the process being suspended. With the freezer cgroup the process is unaware, and unable to capture, that it is being suspended, and subsequently resumed.\n",
+				"description": "Use the freezer cgroup to suspend all processes in a container.\n\nTraditionally, when suspending a process the `SIGSTOP` signal is used,\nwhich is observable by the process being suspended. With the freezer\ncgroup the process is unaware, and unable to capture, that it is being\nsuspended, and subsequently resumed.\n",
 				"operationId": "ContainerPause",
 				"responses": {
 					"204": {
@@ -7119,7 +7292,7 @@ module.exports = {
 		"/containers/{id}/attach": {
 			"post": {
 				"summary": "Attach to a container",
-				"description": "Attach to a container to read its output or send it input. You can attach to the same container multiple times and you can reattach to containers that have been detached.\n\nEither the `stream` or `logs` parameter must be `true` for this endpoint to do anything.\n\nSee [the documentation for the `docker attach` command](https://docs.docker.com/engine/reference/commandline/attach/) for more details.\n\n### Hijacking\n\nThis endpoint hijacks the HTTP connection to transport `stdin`, `stdout`, and `stderr` on the same socket.\n\nThis is the response from the daemon for an attach request:\n\n```\nHTTP/1.1 200 OK\nContent-Type: application/vnd.docker.raw-stream\n\n[STREAM]\n```\n\nAfter the headers and two new lines, the TCP connection can now be used for raw, bidirectional communication between the client and server.\n\nTo hint potential proxies about connection hijacking, the Docker client can also optionally send connection upgrade headers.\n\nFor example, the client sends this request to upgrade the connection:\n\n```\nPOST /containers/16253994b7c4/attach?stream=1&stdout=1 HTTP/1.1\nUpgrade: tcp\nConnection: Upgrade\n```\n\nThe Docker daemon will respond with a `101 UPGRADED` response, and will similarly follow with the raw stream:\n\n```\nHTTP/1.1 101 UPGRADED\nContent-Type: application/vnd.docker.raw-stream\nConnection: Upgrade\nUpgrade: tcp\n\n[STREAM]\n```\n\n### Stream format\n\nWhen the TTY setting is disabled in [`POST /containers/create`](#operation/ContainerCreate), the stream over the hijacked connected is multiplexed to separate out `stdout` and `stderr`. The stream consists of a series of frames, each containing a header and a payload.\n\nThe header contains the information which the stream writes (`stdout` or `stderr`). It also contains the size of the associated frame encoded in the last four bytes (`uint32`).\n\nIt is encoded on the first eight bytes like this:\n\n```go\nheader := [8]byte{STREAM_TYPE, 0, 0, 0, SIZE1, SIZE2, SIZE3, SIZE4}\n```\n\n`STREAM_TYPE` can be:\n\n- 0: `stdin` (is written on `stdout`)\n- 1: `stdout`\n- 2: `stderr`\n\n`SIZE1, SIZE2, SIZE3, SIZE4` are the four bytes of the `uint32` size encoded as big endian.\n\nFollowing the header is the payload, which is the specified number of bytes of `STREAM_TYPE`.\n\nThe simplest way to implement this protocol is the following:\n\n1. Read 8 bytes.\n2. Choose `stdout` or `stderr` depending on the first byte.\n3. Extract the frame size from the last four bytes.\n4. Read the extracted size and output it on the correct output.\n5. Goto 1.\n\n### Stream format when using a TTY\n\nWhen the TTY setting is enabled in [`POST /containers/create`](#operation/ContainerCreate), the stream is not multiplexed. The data exchanged over the hijacked connection is simply the raw data from the process PTY and client's `stdin`.\n",
+				"description": "Attach to a container to read its output or send it input. You can attach\nto the same container multiple times and you can reattach to containers\nthat have been detached.\n\nEither the `stream` or `logs` parameter must be `true` for this endpoint\nto do anything.\n\nSee the [documentation for the `docker attach` command](https://docs.docker.com/engine/reference/commandline/attach/)\nfor more details.\n\n### Hijacking\n\nThis endpoint hijacks the HTTP connection to transport `stdin`, `stdout`,\nand `stderr` on the same socket.\n\nThis is the response from the daemon for an attach request:\n\n```\nHTTP/1.1 200 OK\nContent-Type: application/vnd.docker.raw-stream\n\n[STREAM]\n```\n\nAfter the headers and two new lines, the TCP connection can now be used\nfor raw, bidirectional communication between the client and server.\n\nTo hint potential proxies about connection hijacking, the Docker client\ncan also optionally send connection upgrade headers.\n\nFor example, the client sends this request to upgrade the connection:\n\n```\nPOST /containers/16253994b7c4/attach?stream=1&stdout=1 HTTP/1.1\nUpgrade: tcp\nConnection: Upgrade\n```\n\nThe Docker daemon will respond with a `101 UPGRADED` response, and will\nsimilarly follow with the raw stream:\n\n```\nHTTP/1.1 101 UPGRADED\nContent-Type: application/vnd.docker.raw-stream\nConnection: Upgrade\nUpgrade: tcp\n\n[STREAM]\n```\n\n### Stream format\n\nWhen the TTY setting is disabled in [`POST /containers/create`](#operation/ContainerCreate),\nthe stream over the hijacked connected is multiplexed to separate out\n`stdout` and `stderr`. The stream consists of a series of frames, each\ncontaining a header and a payload.\n\nThe header contains the information which the stream writes (`stdout` or\n`stderr`). It also contains the size of the associated frame encoded in\nthe last four bytes (`uint32`).\n\nIt is encoded on the first eight bytes like this:\n\n```go\nheader := [8]byte{STREAM_TYPE, 0, 0, 0, SIZE1, SIZE2, SIZE3, SIZE4}\n```\n\n`STREAM_TYPE` can be:\n\n- 0: `stdin` (is written on `stdout`)\n- 1: `stdout`\n- 2: `stderr`\n\n`SIZE1, SIZE2, SIZE3, SIZE4` are the four bytes of the `uint32` size\nencoded as big endian.\n\nFollowing the header is the payload, which is the specified number of\nbytes of `STREAM_TYPE`.\n\nThe simplest way to implement this protocol is the following:\n\n1. Read 8 bytes.\n2. Choose `stdout` or `stderr` depending on the first byte.\n3. Extract the frame size from the last four bytes.\n4. Read the extracted size and output it on the correct output.\n5. Goto 1.\n\n### Stream format when using a TTY\n\nWhen the TTY setting is enabled in [`POST /containers/create`](#operation/ContainerCreate),\nthe stream is not multiplexed. The data exchanged over the hijacked\nconnection is simply the raw data from the process PTY and client's\n`stdin`.\n",
 				"operationId": "ContainerAttach",
 				"produces": [
 					"application/vnd.docker.raw-stream"
@@ -7166,20 +7339,20 @@ module.exports = {
 					{
 						"name": "detachKeys",
 						"in": "query",
-						"description": "Override the key sequence for detaching a container.Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`.",
+						"description": "Override the key sequence for detaching a container.Format is a single\ncharacter `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`,\n`@`, `^`, `[`, `,` or `_`.\n",
 						"type": "string"
 					},
 					{
 						"name": "logs",
 						"in": "query",
-						"description": "Replay previous logs from the container.\n\nThis is useful for attaching to a container that has started and you want to output everything since the container started.\n\nIf `stream` is also enabled, once all the previous output has been returned, it will seamlessly transition into streaming current output.\n",
+						"description": "Replay previous logs from the container.\n\nThis is useful for attaching to a container that has started and you\nwant to output everything since the container started.\n\nIf `stream` is also enabled, once all the previous output has been\nreturned, it will seamlessly transition into streaming current\noutput.\n",
 						"type": "boolean",
 						"default": false
 					},
 					{
 						"name": "stream",
 						"in": "query",
-						"description": "Stream attached streams from the time the request was made onwards",
+						"description": "Stream attached streams from the time the request was made onwards.\n",
 						"type": "boolean",
 						"default": false
 					},
@@ -7256,7 +7429,7 @@ module.exports = {
 					{
 						"name": "detachKeys",
 						"in": "query",
-						"description": "Override the key sequence for detaching a container.Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,`, or `_`.",
+						"description": "Override the key sequence for detaching a container.Format is a single\ncharacter `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`,\n`@`, `^`, `[`, `,`, or `_`.\n",
 						"type": "string"
 					},
 					{
@@ -7366,7 +7539,7 @@ module.exports = {
 					{
 						"name": "condition",
 						"in": "query",
-						"description": "Wait until a container state reaches the given condition, either 'not-running' (default), 'next-exit', or 'removed'.",
+						"description": "Wait until a container state reaches the given condition, either\n'not-running' (default), 'next-exit', or 'removed'.\n",
 						"type": "string",
 						"default": "not-running"
 					}
@@ -7408,7 +7581,7 @@ module.exports = {
 						},
 						"examples": {
 							"application/json": {
-								"message": "You cannot remove a running container: c2ada9df5af8. Stop the container before attempting removal or force remove"
+								"message": "You cannot remove a running container: c2ada9df5af8. Stop the\ncontainer before attempting removal or force remove\n"
 							}
 						}
 					},
@@ -7457,7 +7630,7 @@ module.exports = {
 		"/containers/{id}/archive": {
 			"head": {
 				"summary": "Get information about files in a container",
-				"description": "A response header `X-Docker-Container-Path-Stat` is return containing a base64 - encoded JSON object with some filesystem header information about the path.",
+				"description": "A response header `X-Docker-Container-Path-Stat` is returned, containing\na base64 - encoded JSON object with some filesystem header information\nabout the path.\n",
 				"operationId": "ContainerArchiveInfo",
 				"responses": {
 					"200": {
@@ -7465,7 +7638,7 @@ module.exports = {
 						"headers": {
 							"X-Docker-Container-Path-Stat": {
 								"type": "string",
-								"description": "A base64 - encoded JSON object with some filesystem header information about the path"
+								"description": "A base64 - encoded JSON object with some filesystem header\ninformation about the path\n"
 							}
 						}
 					},
@@ -7480,7 +7653,7 @@ module.exports = {
 									"type": "object",
 									"properties": {
 										"message": {
-											"description": "The error message. Either \"must specify path parameter\" (path cannot be empty) or \"not a directory\" (path was asserted to be a directory but exists as a file).",
+											"description": "The error message. Either \"must specify path parameter\"\n(path cannot be empty) or \"not a directory\" (path was\nasserted to be a directory but exists as a file).\n",
 											"type": "string",
 											"x-nullable": false
 										}
@@ -7549,7 +7722,7 @@ module.exports = {
 									"type": "object",
 									"properties": {
 										"message": {
-											"description": "The error message. Either \"must specify path parameter\" (path cannot be empty) or \"not a directory\" (path was asserted to be a directory but exists as a file).",
+											"description": "The error message. Either \"must specify path parameter\"\n(path cannot be empty) or \"not a directory\" (path was\nasserted to be a directory but exists as a file).\n",
 											"type": "string",
 											"x-nullable": false
 										}
@@ -7656,20 +7829,20 @@ module.exports = {
 					{
 						"name": "noOverwriteDirNonDir",
 						"in": "query",
-						"description": "If “1”, “true”, or “True” then it will be an error if unpacking the given content would cause an existing directory to be replaced with a non-directory and vice versa.",
+						"description": "If `1`, `true`, or `True` then it will be an error if unpacking the\ngiven content would cause an existing directory to be replaced with\na non-directory and vice versa.\n",
 						"type": "string"
 					},
 					{
 						"name": "copyUIDGID",
 						"in": "query",
-						"description": "If “1”, “true”, then it will copy UID/GID maps to the dest file or dir",
+						"description": "If `1`, `true`, then it will copy UID/GID maps to the dest file or\ndir\n",
 						"type": "string"
 					},
 					{
 						"name": "inputStream",
 						"in": "body",
 						"required": true,
-						"description": "The input stream must be a tar archive compressed with one of the following algorithms: identity (no compression), gzip, bzip2, xz.",
+						"description": "The input stream must be a tar archive compressed with one of the\nfollowing algorithms: `identity` (no compression), `gzip`, `bzip2`,\nor `xz`.\n",
 						"schema": {
 							"type": "string",
 							"format": "binary"
@@ -7805,7 +7978,7 @@ module.exports = {
 					{
 						"name": "filters",
 						"in": "query",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the images list. Available filters:\n\n- `before`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n- `dangling=true`\n- `label=key` or `label=\"key=value\"` of an image label\n- `reference`=(`<image-name>[:<tag>]`)\n- `since`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n",
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the images list.\n\nAvailable filters:\n\n- `before`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n- `dangling=true`\n- `label=key` or `label=\"key=value\"` of an image label\n- `reference`=(`<image-name>[:<tag>]`)\n- `since`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n",
 						"type": "string"
 					},
 					{
@@ -8057,7 +8230,7 @@ module.exports = {
 						"name": "filters",
 						"in": "query",
 						"type": "string",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the list of build cache objects. Available filters:\n- `until=<duration>`: duration relative to daemon's time, during which build cache was not used, in Go's duration format (e.g., '24h')\n- `id=<id>`\n- `parent=<id>`\n- `type=<string>`\n- `description=<string>`\n- `inuse`\n- `shared`\n- `private`\n"
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the list of build cache objects.\n\nAvailable filters:\n\n- `until=<duration>`: duration relative to daemon's time, during which build cache was not used, in Go's duration format (e.g., '24h')\n- `id=<id>`\n- `parent=<id>`\n- `type=<string>`\n- `description=<string>`\n- `inuse`\n- `shared`\n- `private`\n"
 					}
 				],
 				"responses": {
@@ -8166,7 +8339,7 @@ module.exports = {
 					{
 						"name": "X-Registry-Auth",
 						"in": "header",
-						"description": "A base64-encoded auth configuration. [See the authentication section for details.](#section/Authentication)",
+						"description": "A base64url-encoded auth configuration.\n\nRefer to the [authentication section](#section/Authentication) for\ndetails.\n",
 						"type": "string"
 					},
 					{
@@ -8444,7 +8617,7 @@ module.exports = {
 		"/images/{name}/push": {
 			"post": {
 				"summary": "Push an image",
-				"description": "Push an image to a registry.\n\nIf you wish to push an image on to a private registry, that image must already have a tag which references the registry. For example, `registry.example.com/myimage:latest`.\n\nThe push is cancelled if the HTTP connection is closed.\n",
+				"description": "Push an image to a registry.\n\nIf you wish to push an image on to a private registry, that image must\nalready have a tag which references the registry. For example,\n`registry.example.com/myimage:latest`.\n\nThe push is cancelled if the HTTP connection is closed.\n",
 				"operationId": "ImagePush",
 				"consumes": [
 					"application/octet-stream"
@@ -8483,7 +8656,7 @@ module.exports = {
 					{
 						"name": "X-Registry-Auth",
 						"in": "header",
-						"description": "A base64-encoded auth configuration. [See the authentication section for details.](#section/Authentication)",
+						"description": "A base64url-encoded auth configuration.\n\nRefer to the [authentication section](#section/Authentication) for\ndetails.\n",
 						"type": "string",
 						"required": true
 					}
@@ -8777,7 +8950,7 @@ module.exports = {
 		"/auth": {
 			"post": {
 				"summary": "Check auth configuration",
-				"description": "Validate credentials for a registry and, if available, get an identity token for accessing the registry without password.",
+				"description": "Validate credentials for a registry and, if available, get an identity\ntoken for accessing the registry without password.\n",
 				"operationId": "SystemAuth",
 				"consumes": [
 					"application/json"
@@ -8877,89 +9050,7 @@ module.exports = {
 					"200": {
 						"description": "no error",
 						"schema": {
-							"type": "object",
-							"title": "SystemVersionResponse",
-							"properties": {
-								"Platform": {
-									"type": "object",
-									"required": [
-										"Name"
-									],
-									"properties": {
-										"Name": {
-											"type": "string"
-										}
-									}
-								},
-								"Components": {
-									"type": "array",
-									"items": {
-										"type": "object",
-										"x-go-name": "ComponentVersion",
-										"required": [
-											"Name",
-											"Version"
-										],
-										"properties": {
-											"Name": {
-												"type": "string"
-											},
-											"Version": {
-												"type": "string",
-												"x-nullable": false
-											},
-											"Details": {
-												"type": "object",
-												"x-nullable": true
-											}
-										}
-									}
-								},
-								"Version": {
-									"type": "string"
-								},
-								"ApiVersion": {
-									"type": "string"
-								},
-								"MinAPIVersion": {
-									"type": "string"
-								},
-								"GitCommit": {
-									"type": "string"
-								},
-								"GoVersion": {
-									"type": "string"
-								},
-								"Os": {
-									"type": "string"
-								},
-								"Arch": {
-									"type": "string"
-								},
-								"KernelVersion": {
-									"type": "string"
-								},
-								"Experimental": {
-									"type": "boolean"
-								},
-								"BuildTime": {
-									"type": "string"
-								}
-							}
-						},
-						"examples": {
-							"application/json": {
-								"Version": "17.04.0",
-								"Os": "linux",
-								"KernelVersion": "3.19.0-23-generic",
-								"GoVersion": "go1.7.5",
-								"GitCommit": "deadbee",
-								"Arch": "amd64",
-								"ApiVersion": "1.27",
-								"MinAPIVersion": "1.12",
-								"BuildTime": "2016-06-14T07:09:13.444803460+00:00",
-								"Experimental": true
-							}
+							"$ref": "#/definitions/SystemVersion"
 						}
 					},
 					"500": {
@@ -9447,7 +9538,7 @@ module.exports = {
 		"/images/get": {
 			"get": {
 				"summary": "Export several images",
-				"description": "Get a tarball containing all images and metadata for several image repositories.\n\nFor each value of the `names` parameter: if it is a specific name and tag (e.g. `ubuntu:latest`), then only that image (and its parents) are returned; if it is an image ID, similarly only that image (and its parents) are returned and there would be no names referenced in the 'repositories' file for this image ID.\n\nFor details on the format, see [the export image endpoint](#operation/ImageGet).\n",
+				"description": "Get a tarball containing all images and metadata for several image\nrepositories.\n\nFor each value of the `names` parameter: if it is a specific name and\ntag (e.g. `ubuntu:latest`), then only that image (and its parents) are\nreturned; if it is an image ID, similarly only that image (and its parents)\nare returned and there would be no names referenced in the 'repositories'\nfile for this image ID.\n\nFor details on the format, see the [export image endpoint](#operation/ImageGet).\n",
 				"operationId": "ImageGetAll",
 				"produces": [
 					"application/x-tar"
@@ -9486,7 +9577,7 @@ module.exports = {
 		"/images/load": {
 			"post": {
 				"summary": "Import images",
-				"description": "Load a set of images and tags into a repository.\n\nFor details on the format, see [the export image endpoint](#operation/ImageGet).\n",
+				"description": "Load a set of images and tags into a repository.\n\nFor details on the format, see the [export image endpoint](#operation/ImageGet).\n",
 				"operationId": "ImageLoad",
 				"consumes": [
 					"application/x-tar"
@@ -9592,14 +9683,14 @@ module.exports = {
 								},
 								"DetachKeys": {
 									"type": "string",
-									"description": "Override the key sequence for detaching a container. Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`."
+									"description": "Override the key sequence for detaching a container. Format is\na single character `[a-Z]` or `ctrl-<value>` where `<value>`\nis one of: `a-z`, `@`, `^`, `[`, `,` or `_`.\n"
 								},
 								"Tty": {
 									"type": "boolean",
 									"description": "Allocate a pseudo-TTY."
 								},
 								"Env": {
-									"description": "A list of environment variables in the form `[\"VAR=value\", ...]`.",
+									"description": "A list of environment variables in the form `[\"VAR=value\", ...]`.\n",
 									"type": "array",
 									"items": {
 										"type": "string"
@@ -9619,11 +9710,11 @@ module.exports = {
 								},
 								"User": {
 									"type": "string",
-									"description": "The user, and optionally, group to run the exec process inside the container. Format is one of: `user`, `user:group`, `uid`, or `uid:gid`."
+									"description": "The user, and optionally, group to run the exec process inside\nthe container. Format is one of: `user`, `user:group`, `uid`,\nor `uid:gid`.\n"
 								},
 								"WorkingDir": {
 									"type": "string",
-									"description": "The working directory for the exec process inside the container."
+									"description": "The working directory for the exec process inside the container.\n"
 								}
 							},
 							"example": {
@@ -9659,7 +9750,7 @@ module.exports = {
 		"/exec/{id}/start": {
 			"post": {
 				"summary": "Start an exec instance",
-				"description": "Starts a previously set up exec instance. If detach is true, this endpoint returns immediately after starting the command. Otherwise, it sets up an interactive session with the command.",
+				"description": "Starts a previously set up exec instance. If detach is true, this endpoint\nreturns immediately after starting the command. Otherwise, it sets up an\ninteractive session with the command.\n",
 				"operationId": "ExecStart",
 				"consumes": [
 					"application/json"
@@ -9722,7 +9813,7 @@ module.exports = {
 		"/exec/{id}/resize": {
 			"post": {
 				"summary": "Resize an exec instance",
-				"description": "Resize the TTY session used by an exec instance. This endpoint only works if `tty` was specified as part of creating and starting the exec instance.",
+				"description": "Resize the TTY session used by an exec instance. This endpoint only works\nif `tty` was specified as part of creating and starting the exec instance.\n",
 				"operationId": "ExecResize",
 				"responses": {
 					"201": {
@@ -9894,7 +9985,7 @@ module.exports = {
 								"Warnings": {
 									"type": "array",
 									"x-nullable": false,
-									"description": "Warnings that occurred when fetching the list of volumes",
+									"description": "Warnings that occurred when fetching the list of volumes.\n",
 									"items": {
 										"type": "string"
 									}
@@ -9982,7 +10073,7 @@ module.exports = {
 							"title": "VolumeConfig",
 							"properties": {
 								"Name": {
-									"description": "The new volume's name. If not specified, Docker generates a name.",
+									"description": "The new volume's name. If not specified, Docker generates a name.\n",
 									"type": "string",
 									"x-nullable": false
 								},
@@ -9993,7 +10084,7 @@ module.exports = {
 									"x-nullable": false
 								},
 								"DriverOpts": {
-									"description": "A mapping of driver options and values. These options are passed directly to the driver and are driver specific.",
+									"description": "A mapping of driver options and values. These options are\npassed directly to the driver and are driver specific.\n",
 									"type": "object",
 									"additionalProperties": {
 										"type": "string"
@@ -10163,7 +10254,7 @@ module.exports = {
 		"/networks": {
 			"get": {
 				"summary": "List networks",
-				"description": "Returns a list of networks. For details on the format, see [the network inspect endpoint](#operation/NetworkInspect).\n\nNote that it uses a different, smaller representation of a network than inspecting a single network. For example,\nthe list of containers attached to the network is not propagated in API versions 1.28 and up.\n",
+				"description": "Returns a list of networks. For details on the format, see the\n[network inspect endpoint](#operation/NetworkInspect).\n\nNote that it uses a different, smaller representation of a network than\ninspecting a single network. For example, the list of containers attached\nto the network is not propagated in API versions 1.28 and up.\n",
 				"operationId": "NetworkList",
 				"produces": [
 					"application/json"
@@ -10254,7 +10345,7 @@ module.exports = {
 					{
 						"name": "filters",
 						"in": "query",
-						"description": "JSON encoded value of the filters (a `map[string][]string`) to process on the networks list. Available filters:\n\n- `dangling=<boolean>` When set to `true` (or `1`), returns all\n   networks that are not in use by a container. When set to `false`\n   (or `0`), only networks that are in use by one or more\n   containers are returned.\n- `driver=<driver-name>` Matches a network's driver.\n- `id=<network-id>` Matches all or part of a network ID.\n- `label=<key>` or `label=<key>=<value>` of a network label.\n- `name=<network-name>` Matches all or part of a network name.\n- `scope=[\"swarm\"|\"global\"|\"local\"]` Filters networks by scope (`swarm`, `global`, or `local`).\n- `type=[\"custom\"|\"builtin\"]` Filters networks by type. The `custom` keyword returns all user-defined networks.\n",
+						"description": "JSON encoded value of the filters (a `map[string][]string`) to process\non the networks list.\n\nAvailable filters:\n\n- `dangling=<boolean>` When set to `true` (or `1`), returns all\n   networks that are not in use by a container. When set to `false`\n   (or `0`), only networks that are in use by one or more\n   containers are returned.\n- `driver=<driver-name>` Matches a network's driver.\n- `id=<network-id>` Matches all or part of a network ID.\n- `label=<key>` or `label=<key>=<value>` of a network label.\n- `name=<network-name>` Matches all or part of a network name.\n- `scope=[\"swarm\"|\"global\"|\"local\"]` Filters networks by scope (`swarm`, `global`, or `local`).\n- `type=[\"custom\"|\"builtin\"]` Filters networks by type. The `custom` keyword returns all user-defined networks.\n",
 						"type": "string"
 					}
 				],
@@ -10423,7 +10514,7 @@ module.exports = {
 									"type": "string"
 								},
 								"CheckDuplicate": {
-									"description": "Check for networks with duplicate names. Since Network is primarily keyed based on a random ID and not on the name, and network name is strictly a user-friendly alias to the network which is uniquely identified using ID, there is no guaranteed way to check for duplicates. CheckDuplicate is there to provide a best effort checking of any networks which has the same name but it is not guaranteed to catch all name collisions.",
+									"description": "Check for networks with duplicate names. Since Network is\nprimarily keyed based on a random ID and not on the name, and\nnetwork name is strictly a user-friendly alias to the network\nwhich is uniquely identified using ID, there is no guaranteed\nway to check for duplicates. CheckDuplicate is there to provide\na best effort checking of any networks which has the same name\nbut it is not guaranteed to catch all name collisions.\n",
 									"type": "boolean"
 								},
 								"Driver": {
@@ -10436,11 +10527,11 @@ module.exports = {
 									"type": "boolean"
 								},
 								"Attachable": {
-									"description": "Globally scoped network is manually attachable by regular containers from workers in swarm mode.",
+									"description": "Globally scoped network is manually attachable by regular\ncontainers from workers in swarm mode.\n",
 									"type": "boolean"
 								},
 								"Ingress": {
-									"description": "Ingress network is the network which provides the routing-mesh in swarm mode.",
+									"description": "Ingress network is the network which provides the routing-mesh\nin swarm mode.\n",
 									"type": "boolean"
 								},
 								"IPAM": {
@@ -10629,11 +10720,11 @@ module.exports = {
 							"properties": {
 								"Container": {
 									"type": "string",
-									"description": "The ID or name of the container to disconnect from the network."
+									"description": "The ID or name of the container to disconnect from the network.\n"
 								},
 								"Force": {
 									"type": "boolean",
-									"description": "Force the container to disconnect from the network."
+									"description": "Force the container to disconnect from the network.\n"
 								}
 							}
 						}
@@ -10718,7 +10809,7 @@ module.exports = {
 						"name": "filters",
 						"in": "query",
 						"type": "string",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the plugin list. Available filters:\n\n- `capability=<capability name>`\n- `enable=<true>|<false>`\n"
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the plugin list.\n\nAvailable filters:\n\n- `capability=<capability name>`\n- `enable=<true>|<false>`\n"
 					}
 				],
 				"tags": [
@@ -10736,7 +10827,7 @@ module.exports = {
 						"schema": {
 							"type": "array",
 							"items": {
-								"description": "Describes a permission the user has to accept upon installing the plugin.",
+								"description": "Describes a permission the user has to accept upon installing\nthe plugin.\n",
 								"type": "object",
 								"title": "PluginPrivilegeItem",
 								"properties": {
@@ -10790,7 +10881,7 @@ module.exports = {
 					{
 						"name": "remote",
 						"in": "query",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					}
@@ -10804,7 +10895,7 @@ module.exports = {
 			"post": {
 				"summary": "Install a plugin",
 				"operationId": "PluginPull",
-				"description": "Pulls and installs a plugin. After the plugin is installed, it can be enabled using the [`POST /plugins/{name}/enable` endpoint](#operation/PostPluginsEnable).\n",
+				"description": "Pulls and installs a plugin. After the plugin is installed, it can be\nenabled using the [`POST /plugins/{name}/enable` endpoint](#operation/PostPluginsEnable).\n",
 				"produces": [
 					"application/json"
 				],
@@ -10837,7 +10928,7 @@ module.exports = {
 					{
 						"name": "X-Registry-Auth",
 						"in": "header",
-						"description": "A base64-encoded auth configuration to use when pulling a plugin from a registry. [See the authentication section for details.](#section/Authentication)",
+						"description": "A base64url-encoded auth configuration to use when pulling a plugin\nfrom a registry.\n\nRefer to the [authentication section](#section/Authentication) for\ndetails.\n",
 						"type": "string"
 					},
 					{
@@ -10846,7 +10937,7 @@ module.exports = {
 						"schema": {
 							"type": "array",
 							"items": {
-								"description": "Describes a permission accepted by the user upon installing the plugin.",
+								"description": "Describes a permission accepted by the user upon installing the\nplugin.\n",
 								"type": "object",
 								"properties": {
 									"Name": {
@@ -10922,7 +11013,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "path",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					}
@@ -10960,14 +11051,14 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "path",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					},
 					{
 						"name": "force",
 						"in": "query",
-						"description": "Disable the plugin before removing. This may result in issues if the plugin is in use by a container.",
+						"description": "Disable the plugin before removing. This may result in issues if the\nplugin is in use by a container.\n",
 						"type": "boolean",
 						"default": false
 					}
@@ -11002,7 +11093,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "path",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					},
@@ -11044,7 +11135,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "path",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					}
@@ -11079,7 +11170,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "path",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					},
@@ -11093,7 +11184,7 @@ module.exports = {
 					{
 						"name": "X-Registry-Auth",
 						"in": "header",
-						"description": "A base64-encoded auth configuration to use when pulling a plugin from a registry. [See the authentication section for details.](#section/Authentication)",
+						"description": "A base64url-encoded auth configuration to use when pulling a plugin\nfrom a registry.\n\nRefer to the [authentication section](#section/Authentication) for\ndetails.\n",
 						"type": "string"
 					},
 					{
@@ -11102,7 +11193,7 @@ module.exports = {
 						"schema": {
 							"type": "array",
 							"items": {
-								"description": "Describes a permission accepted by the user upon installing the plugin.",
+								"description": "Describes a permission accepted by the user upon installing the\nplugin.\n",
 								"type": "object",
 								"properties": {
 									"Name": {
@@ -11172,7 +11263,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "query",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					},
@@ -11200,7 +11291,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "path",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					}
@@ -11238,7 +11329,7 @@ module.exports = {
 					{
 						"name": "name",
 						"in": "path",
-						"description": "The name of the plugin. The `:latest` tag is optional, and is the default if omitted.",
+						"description": "The name of the plugin. The `:latest` tag is optional, and is the\ndefault if omitted.\n",
 						"required": true,
 						"type": "string"
 					},
@@ -11459,7 +11550,7 @@ module.exports = {
 					{
 						"name": "version",
 						"in": "query",
-						"description": "The version number of the node object being updated. This is required to avoid conflicting writes.",
+						"description": "The version number of the node object being updated. This is required\nto avoid conflicting writes.\n",
 						"type": "integer",
 						"format": "int64",
 						"required": true
@@ -11550,15 +11641,15 @@ module.exports = {
 							"type": "object",
 							"properties": {
 								"ListenAddr": {
-									"description": "Listen address used for inter-manager communication, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP). This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the default swarm listening port is used.",
+									"description": "Listen address used for inter-manager communication, as well\nas determining the networking interface used for the VXLAN\nTunnel Endpoint (VTEP). This can either be an address/port\ncombination in the form `192.168.1.1:4567`, or an interface\nfollowed by a port number, like `eth0:4567`. If the port number\nis omitted, the default swarm listening port is used.\n",
 									"type": "string"
 								},
 								"AdvertiseAddr": {
-									"description": "Externally reachable address advertised to other nodes. This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the port number from the listen address is used. If `AdvertiseAddr` is not specified, it will be automatically detected when possible.",
+									"description": "Externally reachable address advertised to other nodes. This\ncan either be an address/port combination in the form\n`192.168.1.1:4567`, or an interface followed by a port number,\nlike `eth0:4567`. If the port number is omitted, the port\nnumber from the listen address is used. If `AdvertiseAddr` is\nnot specified, it will be automatically detected when possible.\n",
 									"type": "string"
 								},
 								"DataPathAddr": {
-									"description": "Address or interface to use for data path traffic (format: `<ip|interface>`), for example,  `192.168.1.1`,\nor an interface, like `eth0`. If `DataPathAddr` is unspecified, the same address as `AdvertiseAddr`\nis used.\n\nThe `DataPathAddr` specifies the address that global scope network drivers will publish towards other\nnodes in order to reach the containers running on this node. Using this parameter it is possible to\nseparate the container data traffic from the management traffic of the cluster.\n",
+									"description": "Address or interface to use for data path traffic (format:\n`<ip|interface>`), for example,  `192.168.1.1`, or an interface,\nlike `eth0`. If `DataPathAddr` is unspecified, the same address\nas `AdvertiseAddr` is used.\n\nThe `DataPathAddr` specifies the address that global scope\nnetwork drivers will publish towards other  nodes in order to\nreach the containers running on this node. Using this parameter\nit is possible to separate the container data traffic from the\nmanagement traffic of the cluster.\n",
 									"type": "string"
 								},
 								"DataPathPort": {
@@ -11567,7 +11658,7 @@ module.exports = {
 									"format": "uint32"
 								},
 								"DefaultAddrPool": {
-									"description": "Default Address Pool specifies default subnet pools for global scope networks.\n",
+									"description": "Default Address Pool specifies default subnet pools for global\nscope networks.\n",
 									"type": "array",
 									"items": {
 										"type": "string",
@@ -11582,7 +11673,7 @@ module.exports = {
 									"type": "boolean"
 								},
 								"SubnetSize": {
-									"description": "SubnetSize specifies the subnet size of the networks created from the default subnet pool\n",
+									"description": "SubnetSize specifies the subnet size of the networks created\nfrom the default subnet pool.\n",
 									"type": "integer",
 									"format": "uint32"
 								},
@@ -11654,19 +11745,19 @@ module.exports = {
 							"type": "object",
 							"properties": {
 								"ListenAddr": {
-									"description": "Listen address used for inter-manager communication if the node gets promoted to manager, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP).",
+									"description": "Listen address used for inter-manager communication if the node\ngets promoted to manager, as well as determining the networking\ninterface used for the VXLAN Tunnel Endpoint (VTEP).\n",
 									"type": "string"
 								},
 								"AdvertiseAddr": {
-									"description": "Externally reachable address advertised to other nodes. This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the port number from the listen address is used. If `AdvertiseAddr` is not specified, it will be automatically detected when possible.",
+									"description": "Externally reachable address advertised to other nodes. This\ncan either be an address/port combination in the form\n`192.168.1.1:4567`, or an interface followed by a port number,\nlike `eth0:4567`. If the port number is omitted, the port\nnumber from the listen address is used. If `AdvertiseAddr` is\nnot specified, it will be automatically detected when possible.\n",
 									"type": "string"
 								},
 								"DataPathAddr": {
-									"description": "Address or interface to use for data path traffic (format: `<ip|interface>`), for example,  `192.168.1.1`,\nor an interface, like `eth0`. If `DataPathAddr` is unspecified, the same address as `AdvertiseAddr`\nis used.\n\nThe `DataPathAddr` specifies the address that global scope network drivers will publish towards other\nnodes in order to reach the containers running on this node. Using this parameter it is possible to\nseparate the container data traffic from the management traffic of the cluster.\n",
+									"description": "Address or interface to use for data path traffic (format:\n`<ip|interface>`), for example,  `192.168.1.1`, or an interface,\nlike `eth0`. If `DataPathAddr` is unspecified, the same addres\nas `AdvertiseAddr` is used.\n\nThe `DataPathAddr` specifies the address that global scope\nnetwork drivers will publish towards other nodes in order to\nreach the containers running on this node. Using this parameter\nit is possible to separate the container data traffic from the\nmanagement traffic of the cluster.\n",
 									"type": "string"
 								},
 								"RemoteAddrs": {
-									"description": "Addresses of manager nodes already participating in the swarm.",
+									"description": "Addresses of manager nodes already participating in the swarm.\n",
 									"type": "array",
 									"items": {
 										"type": "string"
@@ -11717,7 +11808,7 @@ module.exports = {
 				"parameters": [
 					{
 						"name": "force",
-						"description": "Force leave swarm, even if this is the last manager or that it will break the cluster.",
+						"description": "Force leave swarm, even if this is the last manager or that it will\nbreak the cluster.\n",
 						"in": "query",
 						"type": "boolean",
 						"default": false
@@ -11767,7 +11858,7 @@ module.exports = {
 					{
 						"name": "version",
 						"in": "query",
-						"description": "The version number of the swarm object being updated. This is required to avoid conflicting writes.",
+						"description": "The version number of the swarm object being updated. This is\nrequired to avoid conflicting writes.\n",
 						"type": "integer",
 						"format": "int64",
 						"required": true
@@ -11924,7 +12015,7 @@ module.exports = {
 						"name": "filters",
 						"in": "query",
 						"type": "string",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the services list. Available filters:\n\n- `id=<service id>`\n- `label=<service label>`\n- `mode=[\"replicated\"|\"global\"]`\n- `name=<service name>`\n"
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the services list.\n\nAvailable filters:\n\n- `id=<service id>`\n- `label=<service label>`\n- `mode=[\"replicated\"|\"global\"]`\n- `name=<service name>`\n"
 					}
 				],
 				"tags": [
@@ -12114,7 +12205,7 @@ module.exports = {
 					{
 						"name": "X-Registry-Auth",
 						"in": "header",
-						"description": "A base64-encoded auth configuration for pulling from private registries. [See the authentication section for details.](#section/Authentication)",
+						"description": "A base64url-encoded auth configuration for pulling from private\nregistries.\n\nRefer to the [authentication section](#section/Authentication) for\ndetails.\n",
 						"type": "string"
 					}
 				],
@@ -12324,7 +12415,7 @@ module.exports = {
 					{
 						"name": "version",
 						"in": "query",
-						"description": "The version number of the service object being updated. This is required to avoid conflicting writes. This version number should be the value as currently set on the service *before* the update. You can find the current version by calling `GET /services/{id}`",
+						"description": "The version number of the service object being updated. This is\nrequired to avoid conflicting writes.\nThis version number should be the value as currently set on the\nservice *before* the update. You can find the current version by\ncalling `GET /services/{id}`\n",
 						"required": true,
 						"type": "integer"
 					},
@@ -12348,7 +12439,7 @@ module.exports = {
 					{
 						"name": "X-Registry-Auth",
 						"in": "header",
-						"description": "A base64-encoded auth configuration for pulling from private registries. [See the authentication section for details.](#section/Authentication)",
+						"description": "A base64url-encoded auth configuration for pulling from private\nregistries.\n\nRefer to the [authentication section](#section/Authentication) for\ndetails.\n",
 						"type": "string"
 					}
 				],
@@ -12360,7 +12451,7 @@ module.exports = {
 		"/services/{id}/logs": {
 			"get": {
 				"summary": "Get service logs",
-				"description": "Get `stdout` and `stderr` logs from a service. See also [`/containers/{id}/logs`](#operation/ContainerLogs).\n\n**Note**: This endpoint works only for services with the `local`, `json-file` or `journald` logging drivers.\n",
+				"description": "Get `stdout` and `stderr` logs from a service. See also\n[`/containers/{id}/logs`](#operation/ContainerLogs).\n\n**Note**: This endpoint works only for services with the `local`,\n`json-file` or `journald` logging drivers.\n",
 				"operationId": "ServiceLogs",
 				"responses": {
 					"200": {
@@ -12447,7 +12538,7 @@ module.exports = {
 					{
 						"name": "tail",
 						"in": "query",
-						"description": "Only return this number of log lines from the end of the logs. Specify as an integer or `all` to output all log lines.",
+						"description": "Only return this number of log lines from the end of the logs.\nSpecify as an integer or `all` to output all log lines.\n",
 						"type": "string",
 						"default": "all"
 					}
@@ -12660,7 +12751,7 @@ module.exports = {
 						"name": "filters",
 						"in": "query",
 						"type": "string",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the tasks list. Available filters:\n\n- `desired-state=(running | shutdown | accepted)`\n- `id=<task id>`\n- `label=key` or `label=\"key=value\"`\n- `name=<task name>`\n- `node=<node id or name>`\n- `service=<service name>`\n"
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the tasks list.\n\nAvailable filters:\n\n- `desired-state=(running | shutdown | accepted)`\n- `id=<task id>`\n- `label=key` or `label=\"key=value\"`\n- `name=<task name>`\n- `node=<node id or name>`\n- `service=<service name>`\n"
 					}
 				],
 				"tags": [
@@ -12718,7 +12809,7 @@ module.exports = {
 		"/tasks/{id}/logs": {
 			"get": {
 				"summary": "Get task logs",
-				"description": "Get `stdout` and `stderr` logs from a task. See also [`/containers/{id}/logs`](#operation/ContainerLogs).\n\n**Note**: This endpoint works only for services with the `local`, `json-file` or `journald` logging drivers.\n",
+				"description": "Get `stdout` and `stderr` logs from a task.\nSee also [`/containers/{id}/logs`](#operation/ContainerLogs).\n\n**Note**: This endpoint works only for services with the `local`,\n`json-file` or `journald` logging drivers.\n",
 				"operationId": "TaskLogs",
 				"responses": {
 					"200": {
@@ -12805,7 +12896,7 @@ module.exports = {
 					{
 						"name": "tail",
 						"in": "query",
-						"description": "Only return this number of log lines from the end of the logs. Specify as an integer or `all` to output all log lines.",
+						"description": "Only return this number of log lines from the end of the logs.\nSpecify as an integer or `all` to output all log lines.\n",
 						"type": "string",
 						"default": "all"
 					}
@@ -12887,7 +12978,7 @@ module.exports = {
 						"name": "filters",
 						"in": "query",
 						"type": "string",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the secrets list. Available filters:\n\n- `id=<secret id>`\n- `label=<key> or label=<key>=value`\n- `name=<secret name>`\n- `names=<secret name>`\n"
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the secrets list.\n\nAvailable filters:\n\n- `id=<secret id>`\n- `label=<key> or label=<key>=value`\n- `name=<secret name>`\n- `names=<secret name>`\n"
 					}
 				],
 				"tags": [
@@ -13125,12 +13216,12 @@ module.exports = {
 						"schema": {
 							"$ref": "#/definitions/SecretSpec"
 						},
-						"description": "The spec of the secret to update. Currently, only the Labels field can be updated. All other fields must remain unchanged from the [SecretInspect endpoint](#operation/SecretInspect) response values."
+						"description": "The spec of the secret to update. Currently, only the Labels field\ncan be updated. All other fields must remain unchanged from the\n[SecretInspect endpoint](#operation/SecretInspect) response values.\n"
 					},
 					{
 						"name": "version",
 						"in": "query",
-						"description": "The version number of the secret object being updated. This is required to avoid conflicting writes.",
+						"description": "The version number of the secret object being updated. This is\nrequired to avoid conflicting writes.\n",
 						"type": "integer",
 						"format": "int64",
 						"required": true
@@ -13189,7 +13280,7 @@ module.exports = {
 						"name": "filters",
 						"in": "query",
 						"type": "string",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the configs list. Available filters:\n\n- `id=<config id>`\n- `label=<key> or label=<key>=value`\n- `name=<config name>`\n- `names=<config name>`\n"
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the configs list.\n\nAvailable filters:\n\n- `id=<config id>`\n- `label=<key> or label=<key>=value`\n- `name=<config name>`\n- `names=<config name>`\n"
 					}
 				],
 				"tags": [
@@ -13410,12 +13501,12 @@ module.exports = {
 						"schema": {
 							"$ref": "#/definitions/ConfigSpec"
 						},
-						"description": "The spec of the config to update. Currently, only the Labels field can be updated. All other fields must remain unchanged from the [ConfigInspect endpoint](#operation/ConfigInspect) response values."
+						"description": "The spec of the config to update. Currently, only the Labels field\ncan be updated. All other fields must remain unchanged from the\n[ConfigInspect endpoint](#operation/ConfigInspect) response values.\n"
 					},
 					{
 						"name": "version",
 						"in": "query",
-						"description": "The version number of the config object being updated. This is required to avoid conflicting writes.",
+						"description": "The version number of the config object being updated. This is\nrequired to avoid conflicting writes.\n",
 						"type": "integer",
 						"format": "int64",
 						"required": true
@@ -13429,7 +13520,7 @@ module.exports = {
 		"/distribution/{name}/json": {
 			"get": {
 				"summary": "Get image information from the registry",
-				"description": "Return image digest and platform information by contacting the registry.",
+				"description": "Return image digest and platform information by contacting the registry.\n",
 				"operationId": "DistributionInspect",
 				"produces": [
 					"application/json"
@@ -13448,7 +13539,7 @@ module.exports = {
 							"properties": {
 								"Descriptor": {
 									"type": "object",
-									"description": "A descriptor struct containing digest, media type, and size",
+									"description": "A descriptor struct containing digest, media type, and size.\n",
 									"properties": {
 										"MediaType": {
 											"type": "string"
@@ -13470,7 +13561,7 @@ module.exports = {
 								},
 								"Platforms": {
 									"type": "array",
-									"description": "An array containing all platforms supported by the image",
+									"description": "An array containing all platforms supported by the image.\n",
 									"items": {
 										"type": "object",
 										"properties": {
@@ -13565,7 +13656,7 @@ module.exports = {
 		"/session": {
 			"post": {
 				"summary": "Initialize interactive session",
-				"description": "Start a new interactive session with a server. Session allows server to call back to the client for advanced capabilities.\n\n### Hijacking\n\nThis endpoint hijacks the HTTP connection to HTTP2 transport that allows the client to expose gPRC services on that connection.\n\nFor example, the client sends this request to upgrade the connection:\n\n```\nPOST /session HTTP/1.1\nUpgrade: h2c\nConnection: Upgrade\n```\n\nThe Docker daemon will respond with a `101 UPGRADED` response follow with the raw stream:\n\n```\nHTTP/1.1 101 UPGRADED\nConnection: Upgrade\nUpgrade: h2c\n```\n",
+				"description": "Start a new interactive session with a server. Session allows server to\ncall back to the client for advanced capabilities.\n\n### Hijacking\n\nThis endpoint hijacks the HTTP connection to HTTP2 transport that allows\nthe client to expose gPRC services on that connection.\n\nFor example, the client sends this request to upgrade the connection:\n\n```\nPOST /session HTTP/1.1\nUpgrade: h2c\nConnection: Upgrade\n```\n\nThe Docker daemon responds with a `101 UPGRADED` response follow with\nthe raw stream:\n\n```\nHTTP/1.1 101 UPGRADED\nConnection: Upgrade\nUpgrade: h2c\n```\n",
 				"operationId": "Session",
 				"produces": [
 					"application/vnd.docker.raw-stream"

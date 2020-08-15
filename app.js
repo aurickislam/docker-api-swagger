@@ -25,7 +25,6 @@ app.use(express.static('swagger-ui'));
 app.get('/swaggerJSON/', (request, response) => {
 	console.log("@GET swagger JSON");
 	response.send(require('./swagger'));
-	// response.send(require('./swagger-ui/swagger.json'));
 });
 
 app.head('/v1.40/*', (req, res) => {
