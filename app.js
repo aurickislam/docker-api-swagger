@@ -1,6 +1,7 @@
 const express = require('express'),
 	app = express(),
-	request = require('request'),
+	colors = require('colors'),
+	// request = require('request'),
 	fetch = require('node-fetch');
 
 let DOCKER_SERVER = 'docker',
@@ -14,15 +15,15 @@ if (process.env.DOCKER_PORT && process.env.DOCKER_PORT != '')
 
 const DOCKER_API_URL = `http://${DOCKER_SERVER}:${DOCKER_PORT}`;
 
-console.log("@DOCKER_SERVER: ", DOCKER_SERVER);
-console.log("@DOCKER_PORT: ", DOCKER_PORT);
-console.log("@DOCKER_API_URL: ", DOCKER_API_URL);
+console.log("@DOCKER_SERVER: ".green, DOCKER_SERVER.blue);
+console.log("@DOCKER_PORT: ".red, DOCKER_PORT.toString().yellow);
+console.log("@DOCKER_API_URL: ".green, DOCKER_API_URL);
 
 app.use(express.json());
 
 app.use(express.static('swagger-ui'));
 
-app.get('/swaggerJSON/', (request, response) => {
+app.get('/swagger-json/', (request, response) => {
 	console.log("@GET swagger JSON");
 	response.send(require('./swagger'));
 });
@@ -214,7 +215,7 @@ app.put('/v1.40/*', (req, res) => {
 });
 
 app.listen(8083, _ => {
-	console.log('================================');
-	console.log('Server is running at port : 8083');
-	console.log('================================');
+	console.log('\n================================'.rainbow);
+	console.log('Server is running at port:'.cyan + ' 8083'.red);
+	console.log('================================\n'.rainbow);
 });
