@@ -12,7 +12,7 @@ module.exports = {
 		"application/json",
 		"text/plain"
 	],
-// "host": "127.0.0.1:80",
+	// "host": "192.168.88.18:2375",
 	"basePath": "/v1.40",
 	"info": {
 		"title": "Docker Engine API",
@@ -4909,7 +4909,7 @@ module.exports = {
 					"example": 4
 				},
 				"MemTotal": {
-					"description": "Total amount of physical memory available on the host, in kilobytes (kB).\n",
+					"description": "Total amount of physical memory available on the host, in bytes.\n",
 					"type": "integer",
 					"format": "int64",
 					"example": 2095882240

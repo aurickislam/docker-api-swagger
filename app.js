@@ -5,7 +5,7 @@ const express = require('express'),
 	fetch = require('node-fetch');
 
 let DOCKER_SERVER = 'docker',
-	DOCKER_PORT = 2376;
+	DOCKER_PORT = 2375;
 
 if (process.env.DOCKER_SERVER && process.env.DOCKER_SERVER != '')
 	DOCKER_SERVER = process.env.DOCKER_SERVER;
