@@ -13,14 +13,14 @@ module.exports = {
 		"text/plain"
 	],
 	// "host": "192.168.88.18:2375",
-	"basePath": "/v1.40",
+	// "basePath": "/v1.41",
 	"info": {
 		"title": "Docker Engine API",
-		"version": "1.40",
+		"version": "1.41",
 		"x-logo": {
 			"url": "https://docs.docker.com/images/logo-docker-main.png"
 		},
-		"description": "The Engine API is an HTTP API served by Docker Engine. It is the API the\nDocker client uses to communicate with the Engine, so everything the Docker\nclient can do can be done with the API.\n\nMost of the client's commands map directly to API endpoints (e.g. `docker ps`\nis `GET /containers/json`). The notable exception is running containers,\nwhich consists of several API calls.\n\n# Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure\nof the API call. The body of the response will be JSON in the following\nformat:\n\n```\n{\n  \"message\": \"page not found\"\n}\n```\n\n# Versioning\n\nThe API is usually changed in each release, so API calls are versioned to\nensure that clients don't break. To lock to a specific version of the API,\nyou prefix the URL with its version, for example, call `/v1.30/info` to use\nthe v1.30 version of the `/info` endpoint. If the API version specified in\nthe URL is not supported by the daemon, a HTTP `400 Bad Request` error message\nis returned.\n\nIf you omit the version-prefix, the current version of the API (v1.40) is used.\nFor example, calling `/info` is the same as calling `/v1.40/info`. Using the\nAPI without a version-prefix is deprecated and will be removed in a future release.\n\nEngine releases in the near future should support this version of the API,\nso your client will continue to work even if it is talking to a newer Engine.\n\nThe API uses an open schema model, which means server may add extra properties\nto responses. Likewise, the server will ignore any extra query parameters and\nrequest body properties. When you write clients, you need to ignore additional\nproperties in responses to ensure they do not break when talking to newer\ndaemons.\n\n\n# Authentication\n\nAuthentication for registries is handled client side. The client has to send\nauthentication details to various endpoints that need to communicate with\nregistries, such as `POST /images/(name)/push`. These are sent as\n`X-Registry-Auth` header as a [base64url encoded](https://tools.ietf.org/html/rfc4648#section-5)\n(JSON) string with the following structure:\n\n```\n{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"serveraddress\": \"string\"\n}\n```\n\nThe `serveraddress` is a domain/IP without a protocol. Throughout this\nstructure, double quotes are required.\n\nIf you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth),\nyou can just pass this instead of credentials:\n\n```\n{\n  \"identitytoken\": \"9cbaf023786cd7...\"\n}\n```\n"
+		"description": "The Engine API is an HTTP API served by Docker Engine. It is the API the\nDocker client uses to communicate with the Engine, so everything the Docker\nclient can do can be done with the API.\n\nMost of the client's commands map directly to API endpoints (e.g. `docker ps`\nis `GET /containers/json`). The notable exception is running containers,\nwhich consists of several API calls.\n\n# Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure\nof the API call. The body of the response will be JSON in the following\nformat:\n\n```\n{\n  \"message\": \"page not found\"\n}\n```\n\n# Versioning\n\nThe API is usually changed in each release, so API calls are versioned to\nensure that clients don't break. To lock to a specific version of the API,\nyou prefix the URL with its version, for example, call `/v1.30/info` to use\nthe v1.30 version of the `/info` endpoint. If the API version specified in\nthe URL is not supported by the daemon, a HTTP `400 Bad Request` error message\nis returned.\n\nIf you omit the version-prefix, the current version of the API (v1.41) is used.\nFor example, calling `/info` is the same as calling `/v1.41/info`. Using the\nAPI without a version-prefix is deprecated and will be removed in a future release.\n\nEngine releases in the near future should support this version of the API,\nso your client will continue to work even if it is talking to a newer Engine.\n\nThe API uses an open schema model, which means server may add extra properties\nto responses. Likewise, the server will ignore any extra query parameters and\nrequest body properties. When you write clients, you need to ignore additional\nproperties in responses to ensure they do not break when talking to newer\ndaemons.\n\n\n# Authentication\n\nAuthentication for registries is handled client side. The client has to send\nauthentication details to various endpoints that need to communicate with\nregistries, such as `POST /images/(name)/push`. These are sent as\n`X-Registry-Auth` header as a [base64url encoded](https://tools.ietf.org/html/rfc4648#section-5)\n(JSON) string with the following structure:\n\n```\n{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"serveraddress\": \"string\"\n}\n```\n\nThe `serveraddress` is a domain/IP without a protocol. Throughout this\nstructure, double quotes are required.\n\nIf you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth),\nyou can just pass this instead of credentials:\n\n```\n{\n  \"identitytoken\": \"9cbaf023786cd7...\"\n}\n```\n"
 	},
 	"tags": [
 		{
@@ -485,7 +485,7 @@ module.exports = {
 					}
 				},
 				"KernelMemory": {
-					"description": "Kernel memory limit in bytes.",
+					"description": "Kernel memory limit in bytes.\n\n<p><br /></p>\n\n> **Deprecated**: This field is deprecated as the kernel 5.4 deprecated\n> `kmem.limit_in_bytes`.\n",
 					"type": "integer",
 					"format": "int64",
 					"example": 209715200
@@ -572,6 +572,29 @@ module.exports = {
 					"description": "Maximum IO in bytes per second for the container system drive\n(Windows only).\n",
 					"type": "integer",
 					"format": "int64"
+				}
+			}
+		},
+		"Limit": {
+			"description": "An object describing a limit on resources which can be requested by a task.\n",
+			"type": "object",
+			"properties": {
+				"NanoCPUs": {
+					"type": "integer",
+					"format": "int64",
+					"example": 4000000000
+				},
+				"MemoryBytes": {
+					"type": "integer",
+					"format": "int64",
+					"example": 8272408576
+				},
+				"Pids": {
+					"description": "Limits the maximum number of PIDs in the container. Set `0` for unlimited.\n",
+					"type": "integer",
+					"format": "int64",
+					"default": 0,
+					"example": 100
 				}
 			}
 		},
@@ -810,13 +833,6 @@ module.exports = {
 								"$ref": "#/definitions/Mount"
 							}
 						},
-						"Capabilities": {
-							"type": "array",
-							"description": "A list of kernel capabilities to be available for container (this\noverrides the default set).\n\nConflicts with options 'CapAdd' and 'CapDrop'\"\n",
-							"items": {
-								"type": "string"
-							}
-						},
 						"CapAdd": {
 							"type": "array",
 							"description": "A list of kernel capabilities to add to the container. Conflicts\nwith option 'Capabilities'.\n",
@@ -830,6 +846,14 @@ module.exports = {
 							"items": {
 								"type": "string"
 							}
+						},
+						"CgroupnsMode": {
+							"type": "string",
+							"enum": [
+								"private",
+								"host"
+							],
+							"description": "cgroup namespace mode for the container. Possible values are:\n\n- `\"private\"`: the container runs in its own private cgroup namespace\n- `\"host\"`: use the host system's cgroup namespace\n\nIf not specified, the daemon default is used, which can either be `\"private\"`\nor `\"host\"`, depending on daemon version, kernel support and configuration.\n"
 						},
 						"Dns": {
 							"type": "array",
@@ -3482,6 +3506,50 @@ module.exports = {
 							"additionalProperties": {
 								"type": "string"
 							}
+						},
+						"CapabilityAdd": {
+							"type": "array",
+							"description": "A list of kernel capabilities to add to the default set\nfor the container.\n",
+							"items": {
+								"type": "string"
+							},
+							"example": [
+								"CAP_NET_RAW",
+								"CAP_SYS_ADMIN",
+								"CAP_SYS_CHROOT",
+								"CAP_SYSLOG"
+							]
+						},
+						"CapabilityDrop": {
+							"type": "array",
+							"description": "A list of kernel capabilities to drop from the default set\nfor the container.\n",
+							"items": {
+								"type": "string"
+							},
+							"example": [
+								"CAP_NET_RAW"
+							]
+						},
+						"Ulimits": {
+							"description": "A list of resource limits to set in the container. For example: `{\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048}`\"\n",
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"Name": {
+										"description": "Name of ulimit",
+										"type": "string"
+									},
+									"Soft": {
+										"description": "Soft limit",
+										"type": "integer"
+									},
+									"Hard": {
+										"description": "Hard limit",
+										"type": "integer"
+									}
+								}
+							}
 						}
 					}
 				},
@@ -3501,7 +3569,7 @@ module.exports = {
 					"properties": {
 						"Limits": {
 							"description": "Define resources limits.",
-							"$ref": "#/definitions/ResourceObject"
+							"$ref": "#/definitions/Limit"
 						},
 						"Reservation": {
 							"description": "Define resources reservation.",
@@ -3735,6 +3803,10 @@ module.exports = {
 				},
 				"DesiredState": {
 					"$ref": "#/definitions/TaskState"
+				},
+				"JobIteration": {
+					"description": "If the Service this Task belongs to is a job-mode service, contains\nthe JobIteration of the Service this Task was created for. Absent if\nthe Task was created for a Replicated or Global Service.\n",
+					"$ref": "#/definitions/ObjectVersion"
 				}
 			},
 			"example": {
@@ -3872,6 +3944,27 @@ module.exports = {
 							}
 						},
 						"Global": {
+							"type": "object"
+						},
+						"ReplicatedJob": {
+							"description": "The mode used for services with a finite number of tasks that run\nto a completed state.\n",
+							"type": "object",
+							"properties": {
+								"MaxConcurrent": {
+									"description": "The maximum number of replicas to run simultaneously.\n",
+									"type": "integer",
+									"format": "int64",
+									"default": 1
+								},
+								"TotalCompletions": {
+									"description": "The total number of replicas desired to reach the Completed\nstate. If unset, will default to the value of `MaxConcurrent`\n",
+									"type": "integer",
+									"format": "int64"
+								}
+							}
+						},
+						"GlobalJob": {
+							"description": "The mode used for services which run a task to the completed state\non each valid node.\n",
 							"type": "object"
 						}
 					}
@@ -4099,6 +4192,44 @@ module.exports = {
 						},
 						"Message": {
 							"type": "string"
+						}
+					}
+				},
+				"ServiceStatus": {
+					"description": "The status of the service's tasks. Provided only when requested as\npart of a ServiceList operation.\n",
+					"type": "object",
+					"properties": {
+						"RunningTasks": {
+							"description": "The number of tasks for the service currently in the Running state.\n",
+							"type": "integer",
+							"format": "uint64",
+							"example": 7
+						},
+						"DesiredTasks": {
+							"description": "The number of tasks for the service desired to be running.\nFor replicated services, this is the replica count from the\nservice spec. For global services, this is computed by taking\ncount of all tasks for the service with a Desired State other\nthan Shutdown.\n",
+							"type": "integer",
+							"format": "uint64",
+							"example": 10
+						},
+						"CompletedTasks": {
+							"description": "The number of tasks for a job that are in the Completed state.\nThis field must be cross-referenced with the service type, as the\nvalue of 0 may mean the service is not in a job mode, or it may\nmean the job-mode service has no tasks yet Completed.\n",
+							"type": "integer",
+							"format": "uint64"
+						}
+					}
+				},
+				"JobStatus": {
+					"description": "The status of the service when it is in one of ReplicatedJob or\nGlobalJob modes. Absent on Replicated and Global mode services. The\nJobIteration is an ObjectVersion, but unlike the Service's version,\ndoes not need to be sent with an update request.\n",
+					"type": "object",
+					"properties": {
+						"JobIteration": {
+							"description": "JobIteration is a value increased each time a Job is executed,\nsuccessfully or otherwise. \"Executed\", in this case, means the\njob as a whole has been started, not that an individual Task has\nbeen launched. A job is \"Executed\" when its ServiceSpec is\nupdated. JobIteration can be used to disambiguate Tasks belonging\nto different executions of a job.  Though JobIteration will\nincrease with each subsequent execution, it may not necessarily\nincrease by 1, and so JobIteration should not be used to\n",
+							"$ref": "#/definitions/ObjectVersion"
+						},
+						"LastExecution": {
+							"description": "The last time, as observed by the server, that this job was\nstarted.\n",
+							"type": "string",
+							"format": "dateTime"
 						}
 					}
 				}
@@ -4677,110 +4808,6 @@ module.exports = {
 					"type": "string",
 					"example": "/var/lib/docker"
 				},
-				"SystemStatus": {
-					"description": "Status information about this node (standalone Swarm API).\n\n<p><br /></p>\n\n> **Note**: The information returned in this field is only propagated\n> by the Swarm standalone API, and is empty (`null`) when using\n> built-in swarm mode.\n",
-					"type": "array",
-					"items": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					"example": [
-						[
-							"Role",
-							"primary"
-						],
-						[
-							"State",
-							"Healthy"
-						],
-						[
-							"Strategy",
-							"spread"
-						],
-						[
-							"Filters",
-							"health, port, containerslots, dependency, affinity, constraint, whitelist"
-						],
-						[
-							"Nodes",
-							"2"
-						],
-						[
-							" swarm-agent-00",
-							"192.168.99.102:2376"
-						],
-						[
-							"  └ ID",
-							"5CT6:FBGO:RVGO:CZL4:PB2K:WCYN:2JSV:KSHH:GGFW:QOPG:6J5Q:IOZ2|192.168.99.102:2376"
-						],
-						[
-							"  └ Status",
-							"Healthy"
-						],
-						[
-							"  └ Containers",
-							"1 (1 Running, 0 Paused, 0 Stopped)"
-						],
-						[
-							"  └ Reserved CPUs",
-							"0 / 1"
-						],
-						[
-							"  └ Reserved Memory",
-							"0 B / 1.021 GiB"
-						],
-						[
-							"  └ Labels",
-							"kernelversion=4.4.74-boot2docker, operatingsystem=Boot2Docker 17.06.0-ce (TCL 7.2); HEAD : 0672754 - Thu Jun 29 00:06:31 UTC 2017, ostype=linux, provider=virtualbox, storagedriver=aufs"
-						],
-						[
-							"  └ UpdatedAt",
-							"2017-08-09T10:03:46Z"
-						],
-						[
-							"  └ ServerVersion",
-							"17.06.0-ce"
-						],
-						[
-							" swarm-manager",
-							"192.168.99.101:2376"
-						],
-						[
-							"  └ ID",
-							"TAMD:7LL3:SEF7:LW2W:4Q2X:WVFH:RTXX:JSYS:XY2P:JEHL:ZMJK:JGIW|192.168.99.101:2376"
-						],
-						[
-							"  └ Status",
-							"Healthy"
-						],
-						[
-							"  └ Containers",
-							"2 (2 Running, 0 Paused, 0 Stopped)"
-						],
-						[
-							"  └ Reserved CPUs",
-							"0 / 1"
-						],
-						[
-							"  └ Reserved Memory",
-							"0 B / 1.021 GiB"
-						],
-						[
-							"  └ Labels",
-							"kernelversion=4.4.74-boot2docker, operatingsystem=Boot2Docker 17.06.0-ce (TCL 7.2); HEAD : 0672754 - Thu Jun 29 00:06:31 UTC 2017, ostype=linux, provider=virtualbox, storagedriver=aufs"
-						],
-						[
-							"  └ UpdatedAt",
-							"2017-08-09T10:04:11Z"
-						],
-						[
-							"  └ ServerVersion",
-							"17.06.0-ce"
-						]
-					]
-				},
 				"Plugins": {
 					"$ref": "#/definitions/PluginsInfo"
 				},
@@ -4795,7 +4822,7 @@ module.exports = {
 					"example": true
 				},
 				"KernelMemory": {
-					"description": "Indicates if the host has kernel memory limit support enabled.",
+					"description": "Indicates if the host has kernel memory limit support enabled.\n\n<p><br /></p>\n\n> **Deprecated**: This field is deprecated as the kernel 5.4 deprecated\n> `kmem.limit_in_bytes`.\n",
 					"type": "boolean",
 					"example": true
 				},
@@ -4878,6 +4905,16 @@ module.exports = {
 					"default": "cgroupfs",
 					"example": "cgroupfs"
 				},
+				"CgroupVersion": {
+					"description": "The version of the cgroup.\n",
+					"type": "string",
+					"enum": [
+						"1",
+						"2"
+					],
+					"default": "1",
+					"example": "1"
+				},
 				"NEventsListener": {
 					"description": "Number of event listeners subscribed.",
 					"type": "integer",
@@ -4892,6 +4929,11 @@ module.exports = {
 					"description": "Name of the host's operating system, for example: \"Ubuntu 16.04.2 LTS\"\nor \"Windows Server 2016 Datacenter\"\n",
 					"type": "string",
 					"example": "Alpine Linux v3.5"
+				},
+				"OSVersion": {
+					"description": "Version of the host's operating system\n\n<p><br /></p>\n\n> **Note**: The information returned in this field, including its\n> very existence, and the formatting of values, should not be considered\n> stable, and may change without notice.\n",
+					"type": "string",
+					"example": "16.04"
 				},
 				"OSType": {
 					"description": "Generic type of the operating system of the host, as returned by the\nGo runtime (`GOOS`).\n\nCurrently returned values are \"linux\" and \"windows\". A full list of\npossible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).\n",
@@ -4968,12 +5010,12 @@ module.exports = {
 					"example": "17.06.0-ce"
 				},
 				"ClusterStore": {
-					"description": "URL of the distributed storage backend.\n\n\nThe storage backend is used for multihost networking (to store\nnetwork and endpoint information) and by the node discovery mechanism.\n\n<p><br /></p>\n\n> **Note**: This field is only propagated when using standalone Swarm\n> mode, and overlay networking using an external k/v store. Overlay\n> networks with Swarm mode enabled use the built-in raft store, and\n> this field will be empty.\n",
+					"description": "URL of the distributed storage backend.\n\n\nThe storage backend is used for multihost networking (to store\nnetwork and endpoint information) and by the node discovery mechanism.\n\n<p><br /></p>\n\n> **Deprecated**: This field is only propagated when using standalone Swarm\n> mode, and overlay networking using an external k/v store. Overlay\n> networks with Swarm mode enabled use the built-in raft store, and\n> this field will be empty.\n",
 					"type": "string",
 					"example": "consul://consul.corp.example.com:8600/some/path"
 				},
 				"ClusterAdvertise": {
-					"description": "The network endpoint that the Engine advertises for the purpose of\nnode discovery. ClusterAdvertise is a `host:port` combination on which\nthe daemon is reachable by other hosts.\n\n<p><br /></p>\n\n> **Note**: This field is only propagated when using standalone Swarm\n> mode, and overlay networking using an external k/v store. Overlay\n> networks with Swarm mode enabled use the built-in raft store, and\n> this field will be empty.\n",
+					"description": "The network endpoint that the Engine advertises for the purpose of\nnode discovery. ClusterAdvertise is a `host:port` combination on which\nthe daemon is reachable by other hosts.\n\n<p><br /></p>\n\n> **Deprecated**: This field is only propagated when using standalone Swarm\n> mode, and overlay networking using an external k/v store. Overlay\n> networks with Swarm mode enabled use the built-in raft store, and\n> this field will be empty.\n",
 					"type": "string",
 					"example": "node5.corp.example.com:8000"
 				},
@@ -5061,6 +5103,25 @@ module.exports = {
 					"description": "Reports a summary of the product license on the daemon.\n\nIf a commercial license has been applied to the daemon, information\nsuch as number of nodes, and expiration are included.\n",
 					"type": "string",
 					"example": "Community Engine"
+				},
+				"DefaultAddressPools": {
+					"description": "List of custom default address pools for local networks, which can be\nspecified in the daemon.json file or dockerd option.\n\nExample: a Base \"10.10.0.0/16\" with Size 24 will define the set of 256\n10.10.[0-255].0/24 address pools.\n",
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"Base": {
+								"description": "The network address in CIDR format",
+								"type": "string",
+								"example": "10.10.0.0/16"
+							},
+							"Size": {
+								"description": "The network pool size",
+								"type": "integer",
+								"example": "24"
+							}
+						}
+					}
 				},
 				"Warnings": {
 					"description": "List of warnings / informational messages about missing features, or\nissues related to the daemon configuration.\n\nThese messages can be printed by the client as information to the user.\n",
@@ -5982,10 +6043,6 @@ module.exports = {
 								"LogPath": {
 									"type": "string"
 								},
-								"Node": {
-									"description": "TODO",
-									"type": "object"
-								},
 								"Name": {
 									"type": "string"
 								},
@@ -6635,7 +6692,7 @@ module.exports = {
 		"/containers/{id}/stats": {
 			"get": {
 				"summary": "Get container stats based on resource usage",
-				"description": "This endpoint returns a live stream of a container’s resource usage\nstatistics.\n\nThe `precpu_stats` is the CPU statistic of the *previous* read, and is\nused to calculate the CPU usage percentage. It is not an exact copy\nof the `cpu_stats` field.\n\nIf either `precpu_stats.online_cpus` or `cpu_stats.online_cpus` is\nnil then for compatibility with older daemons the length of the\ncorresponding `cpu_usage.percpu_usage` array should be used.\n\nTo calculate the values shown by the `stats` command of the docker cli tool\nthe following formulas can be used:\n* used_memory = `memory_stats.usage - memory_stats.stats.cache`\n* available_memory = `memory_stats.limit`\n* Memory usage % = `(used_memory / available_memory) * 100.0`\n* cpu_delta = `cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage`\n* system_cpu_delta = `cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage`\n* number_cpus = `lenght(cpu_stats.cpu_usage.percpu_usage)` or `cpu_stats.online_cpus`\n* CPU usage % = `(cpu_delta / system_cpu_delta) * number_cpus * 100.0`\n",
+				"description": "This endpoint returns a live stream of a container’s resource usage\nstatistics.\n\nThe `precpu_stats` is the CPU statistic of the *previous* read, and is\nused to calculate the CPU usage percentage. It is not an exact copy\nof the `cpu_stats` field.\n\nIf either `precpu_stats.online_cpus` or `cpu_stats.online_cpus` is\nnil then for compatibility with older daemons the length of the\ncorresponding `cpu_usage.percpu_usage` array should be used.\n\nOn a cgroup v2 host, the following fields are not set\n* `blkio_stats`: all fields other than `io_service_bytes_recursive`\n* `cpu_stats`: `cpu_usage.percpu_usage`\n* `memory_stats`: `max_usage` and `failcnt`\nAlso, `memory_stats.stats` fields are incompatible with cgroup v1.\n\nTo calculate the values shown by the `stats` command of the docker cli tool\nthe following formulas can be used:\n* used_memory = `memory_stats.usage - memory_stats.stats.cache`\n* available_memory = `memory_stats.limit`\n* Memory usage % = `(used_memory / available_memory) * 100.0`\n* cpu_delta = `cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage`\n* system_cpu_delta = `cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage`\n* number_cpus = `lenght(cpu_stats.cpu_usage.percpu_usage)` or `cpu_stats.online_cpus`\n* CPU usage % = `(cpu_delta / system_cpu_delta) * number_cpus * 100.0`\n",
 				"operationId": "ContainerStats",
 				"produces": [
 					"application/json"
@@ -6787,6 +6844,13 @@ module.exports = {
 						"description": "Stream the output. If false, the stats will be output once and then\nit will disconnect.\n",
 						"type": "boolean",
 						"default": true
+					},
+					{
+						"name": "one-shot",
+						"in": "query",
+						"description": "Only get a single stat instead of waiting for 2 cycles. Must be used\nwith `stream=false`.\n",
+						"type": "boolean",
+						"default": false
 					}
 				],
 				"tags": [
@@ -7603,7 +7667,7 @@ module.exports = {
 					{
 						"name": "v",
 						"in": "query",
-						"description": "Remove the volumes associated with the container.",
+						"description": "Remove anonymous volumes associated with the container.",
 						"type": "boolean",
 						"default": false
 					},
@@ -9085,7 +9149,7 @@ module.exports = {
 								"type": "string",
 								"description": "Max API Version the server supports"
 							},
-							"BuildKit-Version": {
+							"Builder-Version": {
 								"type": "string",
 								"description": "Default version of docker image builder"
 							},
@@ -9143,7 +9207,7 @@ module.exports = {
 								"type": "string",
 								"description": "Max API Version the server supports"
 							},
-							"BuildKit-Version": {
+							"Builder-Version": {
 								"type": "string",
 								"description": "Default version of docker image builder"
 							},
@@ -9269,7 +9333,7 @@ module.exports = {
 		"/events": {
 			"get": {
 				"summary": "Monitor events",
-				"description": "Stream real-time events from the server.\n\nVarious objects within Docker report events when something happens to them.\n\nContainers report these events: `attach`, `commit`, `copy`, `create`, `destroy`, `detach`, `die`, `exec_create`, `exec_detach`, `exec_start`, `exec_die`, `export`, `health_status`, `kill`, `oom`, `pause`, `rename`, `resize`, `restart`, `start`, `stop`, `top`, `unpause`, and `update`\n\nImages report these events: `delete`, `import`, `load`, `pull`, `push`, `save`, `tag`, and `untag`\n\nVolumes report these events: `create`, `mount`, `unmount`, and `destroy`\n\nNetworks report these events: `create`, `connect`, `disconnect`, `destroy`, `update`, and `remove`\n\nThe Docker daemon reports these events: `reload`\n\nServices report these events: `create`, `update`, and `remove`\n\nNodes report these events: `create`, `update`, and `remove`\n\nSecrets report these events: `create`, `update`, and `remove`\n\nConfigs report these events: `create`, `update`, and `remove`\n",
+				"description": "Stream real-time events from the server.\n\nVarious objects within Docker report events when something happens to them.\n\nContainers report these events: `attach`, `commit`, `copy`, `create`, `destroy`, `detach`, `die`, `exec_create`, `exec_detach`, `exec_start`, `exec_die`, `export`, `health_status`, `kill`, `oom`, `pause`, `rename`, `resize`, `restart`, `start`, `stop`, `top`, `unpause`, `update`, and `prune`\n\nImages report these events: `delete`, `import`, `load`, `pull`, `push`, `save`, `tag`, `untag`, and `prune`\n\nVolumes report these events: `create`, `mount`, `unmount`, `destroy`, and `prune`\n\nNetworks report these events: `create`, `connect`, `disconnect`, `destroy`, `update`, `remove`, and `prune`\n\nThe Docker daemon reports these events: `reload`\n\nServices report these events: `create`, `update`, and `remove`\n\nNodes report these events: `create`, `update`, and `remove`\n\nSecrets report these events: `create`, `update`, and `remove`\n\nConfigs report these events: `create`, `update`, and `remove`\n\nThe Builder reports `prune` events\n",
 				"operationId": "SystemEvents",
 				"produces": [
 					"application/json"
@@ -12016,6 +12080,12 @@ module.exports = {
 						"in": "query",
 						"type": "string",
 						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the services list.\n\nAvailable filters:\n\n- `id=<service id>`\n- `label=<service label>`\n- `mode=[\"replicated\"|\"global\"]`\n- `name=<service name>`\n"
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"type": "boolean",
+						"description": "Include service status, with count of running and desired tasks.\n"
 					}
 				],
 				"tags": [

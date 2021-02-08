@@ -1,4 +1,4 @@
-FROM node:12-alpine3.12
+FROM node:14-alpine3.12
 
 WORKDIR /app
 
@@ -8,7 +8,6 @@ RUN npm i
 
 COPY . .
 
-EXPOSE 8083
+#EXPOSE 8083
 
-CMD [ "node", "app" ]
-#CMD [ "npm", "run", "dev-start" ]
+CMD [ "npm", "start" ]
