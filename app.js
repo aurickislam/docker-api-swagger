@@ -3,32 +3,37 @@ const express = require('express'),
 	colors = require('colors'),
 	fetch = require('node-fetch');
 
-let DOCKER_IP,
-	DOCKER_PORT = 2375;
+let DOCKER_SERVER_IP,
+	DOCKER_SERVER_PORT = 2375;
 
-if (process.env.DOCKER_SERVER && process.env.DOCKER_SERVER != '')
-	DOCKER_IP = process.env.DOCKER_SERVER;
+if (process.env.DOCKER_SERVER_IP && process.env.DOCKER_SERVER_IP != '')
+	DOCKER_SERVER_IP = process.env.DOCKER_SERVER_IP;
 else {
-	console.log("@DOCKER_IP is required".red);
+	console.log("@DOCKER_SERVER_IP is required".red);
 	process.exit(1);
 }
 
-if (process.env.DOCKER_PORT && process.env.DOCKER_PORT != '')
-	DOCKER_PORT = process.env.DOCKER_PORT;
+if (process.env.DOCKER_SERVER_PORT && process.env.DOCKER_SERVER_PORT != '')
+	DOCKER_SERVER_PORT = process.env.DOCKER_SERVER_PORT;
 
-const DOCKER_API_URL = `http://${DOCKER_IP}:${DOCKER_PORT}`;
+const DOCKER_API_URL = `http://${DOCKER_SERVER_IP}:${DOCKER_SERVER_PORT}`;
 
-console.log("@DOCKER_SERVER: ".green, DOCKER_IP.blue);
-console.log("@DOCKER_PORT: ".red, DOCKER_PORT.toString().yellow);
+console.log("@DOCKER_SERVER: ".green, DOCKER_SERVER_IP.blue);
+console.log("@DOCKER_SERVER_PORT: ".red, DOCKER_SERVER_PORT.toString().yellow);
 console.log("@DOCKER_API_URL: ".green, DOCKER_API_URL);
 
 app.use(express.json());
 
 app.use(express.static('swagger-ui'));
 
-app.get('/swagger-json/', (request, response) => {
+/*const CWD = process.cwd();
+app.get('/', (req, res) => {
+	res.sendFile(`${CWD}/swagger-ui/index.html`);
+});*/
+
+app.get('/swagger.json', (req, res) => {
 	console.log("@GET swagger JSON");
-	response.send(require('./swagger'));
+	res.send(require('./swagger'));
 });
 
 // app.head('/v1.*', (req, res) => {
@@ -113,6 +118,9 @@ app.post('*', (req, res) => {
 			headers = response.headers.raw(),
 			cType = response.headers.get('content-type');
 
+		console.log("@headers", headers)
+		console.log("@body", body)
+
 		if (cType != null)
 			headers['content-type'] = cType;
 
@@ -151,7 +159,7 @@ app.put('*', (req, res) => {
 	});
 });
 
-console.log("@trying to connect to DOCKER server");
+console.log("\n@trying to connect to DOCKER server".cyan);
 // fetch(`${DOCKER_API_URL}/v1.41/_ping`, {
 fetch(`${DOCKER_API_URL}/info`, {
 	method: 'GET'

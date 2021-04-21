@@ -512,7 +512,7 @@ module.exports = {
 					"minimum": 0,
 					"maximum": 100
 				},
-				"NanoCPUs": {
+				"NanoCpus": {
 					"description": "CPU quota in units of 10<sup>-9</sup> CPUs.",
 					"type": "integer",
 					"format": "int64"
@@ -5787,7 +5787,7 @@ module.exports = {
 									"MemorySwap": 0,
 									"MemoryReservation": 0,
 									"KernelMemory": 0,
-									"NanoCPUs": 500000,
+									"NanoCpus": 500000,
 									"CpuPercent": 80,
 									"CpuShares": 512,
 									"CpuPeriod": 100000,
@@ -8183,7 +8183,7 @@ module.exports = {
 					{
 						"name": "buildargs",
 						"in": "query",
-						"description": "JSON map of string pairs for build-time variables. Users pass these values at build-time. Docker uses the buildargs as the environment context for commands run via the `Dockerfile` RUN instruction, or for variable expansion in other `Dockerfile` instructions. This is not meant for passing secret values.\n\nFor example, the build arg `FOO=bar` would become `{\"FOO\":\"bar\"}` in JSON. This would result in the the query parameter `buildargs={\"FOO\":\"bar\"}`. Note that `{\"FOO\":\"bar\"}` should be URI component encoded.\n\n[Read more about the buildargs instruction.](https://docs.docker.com/engine/reference/builder/#arg)\n",
+						"description": "JSON map of string pairs for build-time variables. Users pass these values at build-time. Docker uses the buildargs as the environment context for commands run via the `Dockerfile` RUN instruction, or for variable expansion in other `Dockerfile` instructions. This is not meant for passing secret values.\n\nFor example, the build arg `FOO=bar` would become `{\"FOO\":\"bar\"}` in JSON. This would result in the query parameter `buildargs={\"FOO\":\"bar\"}`. Note that `{\"FOO\":\"bar\"}` should be URI component encoded.\n\n[Read more about the buildargs instruction.](https://docs.docker.com/engine/reference/builder/#arg)\n",
 						"type": "string"
 					},
 					{
