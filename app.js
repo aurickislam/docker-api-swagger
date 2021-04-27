@@ -18,7 +18,7 @@ if (process.env.DOCKER_SERVER_PORT && process.env.DOCKER_SERVER_PORT != '')
 
 const DOCKER_API_URL = `http://${DOCKER_SERVER_IP}:${DOCKER_SERVER_PORT}`;
 
-console.log("@DOCKER_SERVER: ".green, DOCKER_SERVER_IP.blue);
+console.log("@DOCKER_SERVER_IP: ".green, DOCKER_SERVER_IP.blue);
 console.log("@DOCKER_SERVER_PORT: ".red, DOCKER_SERVER_PORT.toString().yellow);
 console.log("@DOCKER_API_URL: ".green, DOCKER_API_URL);
 
@@ -59,7 +59,7 @@ app.head('*', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-	console.log("@GET");
+	console.log("@GET", req.originalUrl);
 
 	fetch(`${DOCKER_API_URL}${req.originalUrl}`, {
 		method: 'GET',
@@ -68,6 +68,8 @@ app.get('*', (req, res) => {
 		const body = await response.text(),
 			headers = response.headers.raw(),
 			cType = response.headers.get('content-type');
+
+		console.log("@body", body)
 
 		if (cType != null)
 			headers['content-type'] = cType;
@@ -178,20 +180,26 @@ fetch(`${DOCKER_API_URL}/info`, {
 				console.log("CPU core:".blue, info.NCPU.toString().red);
 
 				if (info.MemTotal.toString().length > 9)
-					console.log("Memory:".blue, `${(info.MemTotal/1073753975.19).toFixed(2)} GB`.red); // 1073753975.19
+					console.log("Memory:".blue, `${(info.MemTotal / 1073753975.19).toFixed(2)} GB`.red); // 1073753975.19
 				else
-					console.log("Memory:".blue, `${(info.MemTotal/1048584).toFixed(0)} MB`.red); // 1048583.96703
+					console.log("Memory:".blue, `${(info.MemTotal / 1048584).toFixed(0)} MB`.red); // 1048583.96703
 
 				// console.log("Memory:".blue, `${(info.MemTotal/1073741824).toFixed(2)} GB`.red);
 				// console.log("Memory:".blue, `${(info.MemTotal/1000000000).toFixed(2)} GB`.red);
 				console.log("Operating System:".blue, info.OperatingSystem.red);
-				console.log("OSType:".blue, info.OSType.red);
+				console.log("OS Version:".blue, info.OSVersion.red);
+				console.log("OS Type:".blue, info.OSType.red);
+				console.log("Kernel Version:".blue, info.KernelVersion.red);
 				console.log("Architecture:".blue, info.Architecture.red);
+				console.log("Arch:".blue, version.Arch.red);
+				console.log("Images:".blue, info.Images.toString().red);
+				console.log("Containers:".blue, info.Containers.toString().red);
+				console.log("Containers Running:".blue, info.ContainersRunning.toString().red);
 
 				console.log("\nDocker info:".green);
-				console.log("Docker Version:".blue, info.ServerVersion.red);
-				console.log("ApiVersion:".blue, version.ApiVersion.red);
-				console.log("MinAPIVersion:".blue, version.MinAPIVersion.red);
+				console.log("Docker Version:".blue, version.Version.red);
+				console.log("Api Version:".blue, version.ApiVersion.red);
+				console.log("Min API Version:".blue, version.MinAPIVersion.red);
 
 				app.listen(8083, _ => {
 					console.log('\n==============================='.rainbow);
