@@ -214,5 +214,6 @@ fetch(`${DOCKER_API_URL}/info`, {
 	}
 }).catch(err => {
 	console.error("@err", err);
+	console.error("Shutting down the application")
 	process.exit(1);
 });
