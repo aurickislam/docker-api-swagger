@@ -12,7 +12,6 @@ module.exports = {
 		"application/json",
 		"text/plain"
 	],
-	// "host": "192.168.88.18:2375",
 	// "basePath": "/v1.41",
 	"info": {
 		"title": "Docker Engine API",
