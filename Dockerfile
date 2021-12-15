@@ -1,4 +1,6 @@
-FROM node:14-alpine3.13
+FROM node:16-alpine3.14
+
+RUN apk update && apk upgrade && apk add --no-cache curl bash jq
 
 WORKDIR /app
 
