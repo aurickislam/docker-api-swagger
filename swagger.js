@@ -12,14 +12,14 @@ module.exports = {
 		"application/json",
 		"text/plain"
 	],
-	"basePath": "/v1.43",
+	"basePath": "/v1.45",
 	"info": {
 		"title": "Docker Engine API",
-		"version": "1.43",
+		"version": "1.45",
 		"x-logo": {
 			"url": "https://docs.docker.com/assets/images/logo-docker-main.png"
 		},
-		"description": "The Engine API is an HTTP API served by Docker Engine. It is the API the\nDocker client uses to communicate with the Engine, so everything the Docker\nclient can do can be done with the API.\n\nMost of the client's commands map directly to API endpoints (e.g. `docker ps`\nis `GET /containers/json`). The notable exception is running containers,\nwhich consists of several API calls.\n\n# Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure\nof the API call. The body of the response will be JSON in the following\nformat:\n\n```\n{\n  \"message\": \"page not found\"\n}\n```\n\n# Versioning\n\nThe API is usually changed in each release, so API calls are versioned to\nensure that clients don't break. To lock to a specific version of the API,\nyou prefix the URL with its version, for example, call `/v1.30/info` to use\nthe v1.30 version of the `/info` endpoint. If the API version specified in\nthe URL is not supported by the daemon, a HTTP `400 Bad Request` error message\nis returned.\n\nIf you omit the version-prefix, the current version of the API (v1.43) is used.\nFor example, calling `/info` is the same as calling `/v1.43/info`. Using the\nAPI without a version-prefix is deprecated and will be removed in a future release.\n\nEngine releases in the near future should support this version of the API,\nso your client will continue to work even if it is talking to a newer Engine.\n\nThe API uses an open schema model, which means server may add extra properties\nto responses. Likewise, the server will ignore any extra query parameters and\nrequest body properties. When you write clients, you need to ignore additional\nproperties in responses to ensure they do not break when talking to newer\ndaemons.\n\n\n# Authentication\n\nAuthentication for registries is handled client side. The client has to send\nauthentication details to various endpoints that need to communicate with\nregistries, such as `POST /images/(name)/push`. These are sent as\n`X-Registry-Auth` header as a [base64url encoded](https://tools.ietf.org/html/rfc4648#section-5)\n(JSON) string with the following structure:\n\n```\n{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"serveraddress\": \"string\"\n}\n```\n\nThe `serveraddress` is a domain/IP without a protocol. Throughout this\nstructure, double quotes are required.\n\nIf you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth),\nyou can just pass this instead of credentials:\n\n```\n{\n  \"identitytoken\": \"9cbaf023786cd7...\"\n}\n```\n"
+		"description": "The Engine API is an HTTP API served by Docker Engine. It is the API the\nDocker client uses to communicate with the Engine, so everything the Docker\nclient can do can be done with the API.\n\nMost of the client's commands map directly to API endpoints (e.g. `docker ps`\nis `GET /containers/json`). The notable exception is running containers,\nwhich consists of several API calls.\n\n# Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure\nof the API call. The body of the response will be JSON in the following\nformat:\n\n```\n{\n  \"message\": \"page not found\"\n}\n```\n\n# Versioning\n\nThe API is usually changed in each release, so API calls are versioned to\nensure that clients don't break. To lock to a specific version of the API,\nyou prefix the URL with its version, for example, call `/v1.30/info` to use\nthe v1.30 version of the `/info` endpoint. If the API version specified in\nthe URL is not supported by the daemon, a HTTP `400 Bad Request` error message\nis returned.\n\nIf you omit the version-prefix, the current version of the API (v1.45) is used.\nFor example, calling `/info` is the same as calling `/v1.45/info`. Using the\nAPI without a version-prefix is deprecated and will be removed in a future release.\n\nEngine releases in the near future should support this version of the API,\nso your client will continue to work even if it is talking to a newer Engine.\n\nThe API uses an open schema model, which means server may add extra properties\nto responses. Likewise, the server will ignore any extra query parameters and\nrequest body properties. When you write clients, you need to ignore additional\nproperties in responses to ensure they do not break when talking to newer\ndaemons.\n\n\n# Authentication\n\nAuthentication for registries is handled client side. The client has to send\nauthentication details to various endpoints that need to communicate with\nregistries, such as `POST /images/(name)/push`. These are sent as\n`X-Registry-Auth` header as a [base64url encoded](https://tools.ietf.org/html/rfc4648#section-5)\n(JSON) string with the following structure:\n\n```\n{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"serveraddress\": \"string\"\n}\n```\n\nThe `serveraddress` is a domain/IP without a protocol. Throughout this\nstructure, double quotes are required.\n\nIf you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth),\nyou can just pass this instead of credentials:\n\n```\n{\n  \"identitytoken\": \"9cbaf023786cd7...\"\n}\n```\n"
 	},
 	"tags": [
 		{
@@ -318,6 +318,16 @@ module.exports = {
 							"description": "Create mount point on host if missing",
 							"type": "boolean",
 							"default": false
+						},
+						"ReadOnlyNonRecursive": {
+							"description": "Make the mount non-recursively read-only, but still leave the mount recursive\n(unless NonRecursive is set to `true` in conjunction).\n\nAddded in v1.44, before that version all read-only mounts were\nnon-recursive by default. To match the previous behaviour this\nwill default to `true` for clients on versions prior to v1.44.\n",
+							"type": "boolean",
+							"default": false
+						},
+						"ReadOnlyForceRecursive": {
+							"description": "Raise an error if the mount cannot be made recursively read-only.",
+							"type": "boolean",
+							"default": false
 						}
 					}
 				},
@@ -353,6 +363,11 @@ module.exports = {
 									}
 								}
 							}
+						},
+						"Subpath": {
+							"description": "Source path inside the volume. Must be relative without any back traversals.",
+							"type": "string",
+							"example": "dir-inside-volume/subdirectory"
 						}
 					}
 				},
@@ -719,6 +734,11 @@ module.exports = {
 				},
 				"StartPeriod": {
 					"description": "Start period for the container to initialize before starting\nhealth-retries countdown in nanoseconds. It should be 0 or at least\n1000000 (1 ms). 0 means inherit.\n",
+					"type": "integer",
+					"format": "int64"
+				},
+				"StartInterval": {
+					"description": "The time to wait between checks in nanoseconds during the start period.\nIt should be 0 or at least 1000000 (1 ms). 0 means inherit.\n",
 					"type": "integer",
 					"format": "int64"
 				}
@@ -1172,7 +1192,7 @@ module.exports = {
 					"x-nullable": true
 				},
 				"MacAddress": {
-					"description": "MAC address of the container.",
+					"description": "MAC address of the container.\n\nDeprecated: this field is deprecated in API v1.44 and up. Use EndpointSettings.MacAddress instead.\n",
 					"type": "string",
 					"x-nullable": true
 				},
@@ -1227,7 +1247,7 @@ module.exports = {
 			"type": "object",
 			"properties": {
 				"EndpointsConfig": {
-					"description": "A mapping of network name to endpoint configuration for that network.\n",
+					"description": "A mapping of network name to endpoint configuration for that network.\nThe endpoint configuration can be left empty to connect to that\nnetwork with no particular endpoint configuration.\n",
 					"type": "object",
 					"additionalProperties": {
 						"$ref": "#/definitions/EndpointSettings"
@@ -1245,6 +1265,7 @@ module.exports = {
 								"fe80::3468"
 							]
 						},
+						"MacAddress": "02:42:ac:12:05:02",
 						"Links": [
 							"container_1",
 							"container_2"
@@ -1253,7 +1274,8 @@ module.exports = {
 							"server_x",
 							"server_y"
 						]
-					}
+					},
+					"database_nw": {}
 				}
 			}
 		},
@@ -1262,7 +1284,7 @@ module.exports = {
 			"type": "object",
 			"properties": {
 				"Bridge": {
-					"description": "Name of the network's bridge (for example, `docker0`).",
+					"description": "Name of the default bridge interface when dockerd's --bridge flag is set.\n",
 					"type": "string",
 					"example": "docker0"
 				},
@@ -1272,30 +1294,30 @@ module.exports = {
 					"example": "9d12daf2c33f5959c8bf90aa513e4f65b561738661003029ec84830cd503a0c3"
 				},
 				"HairpinMode": {
-					"description": "Indicates if hairpin NAT should be enabled on the virtual interface.\n",
+					"description": "Indicates if hairpin NAT should be enabled on the virtual interface.\n\nDeprecated: This field is never set and will be removed in a future release.\n",
 					"type": "boolean",
 					"example": false
 				},
 				"LinkLocalIPv6Address": {
-					"description": "IPv6 unicast address using the link-local prefix.",
+					"description": "IPv6 unicast address using the link-local prefix.\n\nDeprecated: This field is never set and will be removed in a future release.\n",
 					"type": "string",
-					"example": "fe80::42:acff:fe11:1"
+					"example": ""
 				},
 				"LinkLocalIPv6PrefixLen": {
-					"description": "Prefix length of the IPv6 unicast address.",
+					"description": "Prefix length of the IPv6 unicast address.\n\nDeprecated: This field is never set and will be removed in a future release.\n",
 					"type": "integer",
-					"example": "64"
+					"example": ""
 				},
 				"Ports": {
 					"$ref": "#/definitions/PortMap"
 				},
 				"SandboxKey": {
-					"description": "SandboxKey identifies the sandbox",
+					"description": "SandboxKey is the full path of the netns handle",
 					"type": "string",
 					"example": "/var/run/docker/netns/8ab54b426c38"
 				},
 				"SecondaryIPAddresses": {
-					"description": "",
+					"description": "Deprecated: This field is never set and will be removed in a future release.",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/Address"
@@ -1303,7 +1325,7 @@ module.exports = {
 					"x-nullable": true
 				},
 				"SecondaryIPv6Addresses": {
-					"description": "",
+					"description": "Deprecated: This field is never set and will be removed in a future release.",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/Address"
@@ -1536,18 +1558,19 @@ module.exports = {
 					"example": ""
 				},
 				"Created": {
-					"description": "Date and time at which the image was created, formatted in\n[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.\n",
+					"description": "Date and time at which the image was created, formatted in\n[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.\n\nThis information is only available if present in the image,\nand omitted otherwise.\n",
 					"type": "string",
-					"x-nullable": false,
+					"format": "dateTime",
+					"x-nullable": true,
 					"example": "2022-02-04T21:20:12.497794809Z"
 				},
 				"Container": {
-					"description": "The ID of the container that was used to create the image.\n\nDepending on how the image was created, this field may be empty.\n",
+					"description": "The ID of the container that was used to create the image.\n\nDepending on how the image was created, this field may be empty.\n\n**Deprecated**: this field is kept for backward compatibility, but\nwill be removed in API v1.45.\n",
 					"type": "string",
-					"x-nullable": false,
 					"example": "65974bc86f1770ae4bff79f651ebdbce166ae9aada632ee3fa9af3a264911735"
 				},
 				"ContainerConfig": {
+					"description": "**Deprecated**: this field is kept for backward compatibility, but\nwill be removed in API v1.45.\n",
 					"$ref": "#/definitions/ContainerConfig"
 				},
 				"DockerVersion": {
@@ -1597,7 +1620,7 @@ module.exports = {
 					"example": 1239828
 				},
 				"VirtualSize": {
-					"description": "Total size of the image including all layers it is composed of.\n\nIn versions of Docker before v1.10, this field was calculated from\nthe image itself and all of its parent images. Images are now stored\nself-contained, and no longer use a parent-chain, making this field\nan equivalent of the Size field.\n\n> **Deprecated**: this field is kept for backward compatibility, but\n> will be removed in API v1.44.\n",
+					"description": "Total size of the image including all layers it is composed of.\n\nDeprecated: this field is omitted in API v1.44, but kept for backward compatibility. Use Size instead.\n",
 					"type": "integer",
 					"format": "int64",
 					"example": 1239828
@@ -1646,6 +1669,7 @@ module.exports = {
 		},
 		"ImageSummary": {
 			"type": "object",
+			"x-go-name": "Summary",
 			"required": [
 				"Id",
 				"ParentId",
@@ -1717,7 +1741,7 @@ module.exports = {
 					"example": 1239828
 				},
 				"VirtualSize": {
-					"description": "Total size of the image including all layers it is composed of.\n\nIn versions of Docker before v1.10, this field was calculated from\nthe image itself and all of its parent images. Images are now stored\nself-contained, and no longer use a parent-chain, making this field\nan equivalent of the Size field.\n\nDeprecated: this field is kept for backward compatibility, and will be removed in API v1.44.",
+					"description": "Total size of the image including all layers it is composed of.\n\nDeprecated: this field is omitted in API v1.44, but kept for backward compatibility. Use Size instead.",
 					"type": "integer",
 					"format": "int64",
 					"example": 172064416
@@ -2359,6 +2383,11 @@ module.exports = {
 						"container_2"
 					]
 				},
+				"MacAddress": {
+					"description": "MAC address for the endpoint on this network. The network driver might ignore this parameter.\n",
+					"type": "string",
+					"example": "02:42:ac:11:00:04"
+				},
 				"Aliases": {
 					"type": "array",
 					"items": {
@@ -2410,11 +2439,6 @@ module.exports = {
 					"format": "int64",
 					"example": 64
 				},
-				"MacAddress": {
-					"description": "MAC address for the endpoint on this network.\n",
-					"type": "string",
-					"example": "02:42:ac:11:00:04"
-				},
 				"DriverOpts": {
 					"description": "DriverOpts is a mapping of driver options and values. These options\nare passed directly to the driver and are driver specific.\n",
 					"type": "object",
@@ -2426,6 +2450,19 @@ module.exports = {
 						"com.example.some-label": "some-value",
 						"com.example.some-other-label": "some-other-value"
 					}
+				},
+				"DNSNames": {
+					"description": "List of all DNS names an endpoint has on a specific network. This\nlist is based on the container name, network aliases, container short\nID, and hostname.\n\nThese DNS names are non-fully qualified but can contain several dots.\nYou can get fully qualified DNS names by appending `.<network-name>`.\nFor instance, if container name is `my.ctr` and the network is named\n`testnet`, `DNSNames` will contain `my.ctr` and the FQDN will be\n`my.ctr.testnet`.\n",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"example": [
+						"foobar",
+						"server_x",
+						"server_y",
+						"my.ctr"
+					]
 				}
 			}
 		},
@@ -3110,10 +3147,6 @@ module.exports = {
 						},
 						{
 							"Type": "Log",
-							"Name": "logentries"
-						},
-						{
-							"Type": "Log",
 							"Name": "splunk"
 						},
 						{
@@ -3649,6 +3682,41 @@ module.exports = {
 											"description": "SELinux level label"
 										}
 									}
+								},
+								"Seccomp": {
+									"type": "object",
+									"description": "Options for configuring seccomp on the container",
+									"properties": {
+										"Mode": {
+											"type": "string",
+											"enum": [
+												"default",
+												"unconfined",
+												"custom"
+											]
+										},
+										"Profile": {
+											"description": "The custom seccomp profile as a json object",
+											"type": "string"
+										}
+									}
+								},
+								"AppArmor": {
+									"type": "object",
+									"description": "Options for configuring AppArmor on the container",
+									"properties": {
+										"Mode": {
+											"type": "string",
+											"enum": [
+												"default",
+												"disabled"
+											]
+										}
+									}
+								},
+								"NoNewPrivileges": {
+									"type": "boolean",
+									"description": "Configuration of the no_new_privs bit in the container"
 								}
 							}
 						},
@@ -4038,6 +4106,58 @@ module.exports = {
 				"orphaned"
 			]
 		},
+		"ContainerStatus": {
+			"type": "object",
+			"description": "represents the status of a container.",
+			"properties": {
+				"ContainerID": {
+					"type": "string"
+				},
+				"PID": {
+					"type": "integer"
+				},
+				"ExitCode": {
+					"type": "integer"
+				}
+			}
+		},
+		"PortStatus": {
+			"type": "object",
+			"description": "represents the port status of a task's host ports whose service has published host ports",
+			"properties": {
+				"Ports": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/EndpointPortConfig"
+					}
+				}
+			}
+		},
+		"TaskStatus": {
+			"type": "object",
+			"description": "represents the status of a task.",
+			"properties": {
+				"Timestamp": {
+					"type": "string",
+					"format": "dateTime"
+				},
+				"State": {
+					"$ref": "#/definitions/TaskState"
+				},
+				"Message": {
+					"type": "string"
+				},
+				"Err": {
+					"type": "string"
+				},
+				"ContainerStatus": {
+					"$ref": "#/definitions/ContainerStatus"
+				},
+				"PortStatus": {
+					"$ref": "#/definitions/PortStatus"
+				}
+			}
+		},
 		"Task": {
 			"type": "object",
 			"properties": {
@@ -4085,36 +4205,7 @@ module.exports = {
 					"$ref": "#/definitions/GenericResources"
 				},
 				"Status": {
-					"type": "object",
-					"properties": {
-						"Timestamp": {
-							"type": "string",
-							"format": "dateTime"
-						},
-						"State": {
-							"$ref": "#/definitions/TaskState"
-						},
-						"Message": {
-							"type": "string"
-						},
-						"Err": {
-							"type": "string"
-						},
-						"ContainerStatus": {
-							"type": "object",
-							"properties": {
-								"ContainerID": {
-									"type": "string"
-								},
-								"PID": {
-									"type": "integer"
-								},
-								"ExitCode": {
-									"type": "integer"
-								}
-							}
-						}
-					}
+					"$ref": "#/definitions/TaskStatus"
 				},
 				"DesiredState": {
 					"$ref": "#/definitions/TaskState"
@@ -4371,7 +4462,7 @@ module.exports = {
 					}
 				},
 				"Networks": {
-					"description": "Specifies which networks the service should attach to.",
+					"description": "Specifies which networks the service should attach to.\n\nDeprecated: This field is deprecated since v1.44. The Networks field in TaskSpec should be used instead.\n",
 					"type": "array",
 					"items": {
 						"$ref": "#/definitions/NetworkAttachmentConfig"
@@ -4637,6 +4728,7 @@ module.exports = {
 		},
 		"ImageDeleteResponseItem": {
 			"type": "object",
+			"x-go-name": "DeleteResponse",
 			"properties": {
 				"Untagged": {
 					"description": "The image ID of an image that was untagged",
@@ -4645,6 +4737,29 @@ module.exports = {
 				"Deleted": {
 					"description": "The image ID of an image that was deleted",
 					"type": "string"
+				}
+			}
+		},
+		"ServiceCreateResponse": {
+			"type": "object",
+			"description": "contains the information returned to a client on the\ncreation of a new service.\n",
+			"properties": {
+				"ID": {
+					"description": "The ID of the created service.",
+					"type": "string",
+					"x-nullable": false,
+					"example": "ak7w3gjqoa3kuz8xcpnyy0pvl"
+				},
+				"Warnings": {
+					"description": "Optional warning message.\n\nFIXME(thaJeztah): this should have \"omitempty\" in the generated type.\n",
+					"type": "array",
+					"x-nullable": true,
+					"items": {
+						"type": "string"
+					},
+					"example": [
+						"unable to pin image doesnotexist:latest to digest: image library/doesnotexist:latest not found"
+					]
 				}
 			}
 		},
@@ -4660,7 +4775,9 @@ module.exports = {
 				}
 			},
 			"example": {
-				"Warning": "unable to pin image doesnotexist:latest to digest: image library/doesnotexist:latest not found"
+				"Warnings": [
+					"unable to pin image doesnotexist:latest to digest: image library/doesnotexist:latest not found"
+				]
 			}
 		},
 		"ContainerSummary": {
@@ -5307,12 +5424,12 @@ module.exports = {
 					"example": "16.04"
 				},
 				"OSType": {
-					"description": "Generic type of the operating system of the host, as returned by the\nGo runtime (`GOOS`).\n\nCurrently returned values are \"linux\" and \"windows\". A full list of\npossible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).\n",
+					"description": "Generic type of the operating system of the host, as returned by the\nGo runtime (`GOOS`).\n\nCurrently returned values are \"linux\" and \"windows\". A full list of\npossible values can be found in the [Go documentation](https://go.dev/doc/install/source#environment).\n",
 					"type": "string",
 					"example": "linux"
 				},
 				"Architecture": {
-					"description": "Hardware architecture of the host, as returned by the Go runtime\n(`GOARCH`).\n\nA full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).\n",
+					"description": "Hardware architecture of the host, as returned by the Go runtime\n(`GOARCH`).\n\nA full list of possible values can be found in the [Go documentation](https://go.dev/doc/install/source#environment).\n",
 					"type": "string",
 					"example": "x86_64"
 				},
@@ -5495,6 +5612,17 @@ module.exports = {
 						"WARNING: bridge-nf-call-iptables is disabled",
 						"WARNING: bridge-nf-call-ip6tables is disabled"
 					]
+				},
+				"CDISpecDirs": {
+					"description": "List of directories where (Container Device Interface) CDI\nspecifications are located.\n\nThese specifications define vendor-specific modifications to an OCI\nruntime specification for a container being created.\n\nAn empty list indicates that CDI device injection is disabled.\n\nNote that since using CDI device injection requires the daemon to have\nexperimental enabled. For non-experimental daemons an empty list will\nalways be returned.\n",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"example": [
+						"/etc/cdi",
+						"/var/run/cdi"
+					]
 				}
 			}
 		},
@@ -5551,7 +5679,6 @@ module.exports = {
 						"gelf",
 						"journald",
 						"json-file",
-						"logentries",
 						"splunk",
 						"syslog"
 					]
@@ -5697,6 +5824,17 @@ module.exports = {
 						"--debug",
 						"--systemd-cgroup=false"
 					]
+				},
+				"status": {
+					"description": "Information specific to the runtime.\n\nWhile this API specification does not define data provided by runtimes,\nthe following well-known properties may be provided by runtimes:\n\n`org.opencontainers.runtime-spec.features`: features structure as defined\nin the [OCI Runtime Specification](https://github.com/opencontainers/runtime-spec/blob/main/features.md),\nin a JSON string representation.\n\n<p><br /></p>\n\n> **Note**: The information returned in this field, including the\n> formatting of values and labels, should not be considered stable,\n> and may change without notice.\n",
+					"type": "object",
+					"x-nullable": true,
+					"additionalProperties": {
+						"type": "string"
+					},
+					"example": {
+						"org.opencontainers.runtime-spec.features": "{\"ociVersionMin\":\"1.0.0\",\"ociVersionMax\":\"1.1.0\",\"...\":\"...\"}"
+					}
 				}
 			}
 		},
@@ -6638,7 +6776,8 @@ module.exports = {
 												"server_x",
 												"server_y"
 											]
-										}
+										},
+										"database_nw": {}
 									}
 								}
 							}
@@ -6847,7 +6986,7 @@ module.exports = {
 									"StopTimeout": 10
 								},
 								"Created": "2015-01-06T15:47:31.485331387Z",
-								"Driver": "devicemapper",
+								"Driver": "overlay2",
 								"ExecIDs": [
 									"b35395de42bc8abd327f9dd65d913b9ba28c74d2f0734eeeae84fa1c616a0fca",
 									"3fc1232e5cd20c8de182ed81178503dc6437f4e7ef12b52cc5e8de020652f1c4"
@@ -8656,7 +8795,7 @@ module.exports = {
 					{
 						"name": "filters",
 						"in": "query",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the images list.\n\nAvailable filters:\n\n- `before`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n- `dangling=true`\n- `label=key` or `label=\"key=value\"` of an image label\n- `reference`=(`<image-name>[:<tag>]`)\n- `since`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n",
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to\nprocess on the images list.\n\nAvailable filters:\n\n- `before`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n- `dangling=true`\n- `label=key` or `label=\"key=value\"` of an image label\n- `reference`=(`<image-name>[:<tag>]`)\n- `since`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`)\n- `until=<timestamp>`\n",
 						"type": "string"
 					},
 					{
@@ -8866,6 +9005,17 @@ module.exports = {
 						"description": "BuildKit output configuration",
 						"type": "string",
 						"default": ""
+					},
+					{
+						"name": "version",
+						"in": "query",
+						"type": "string",
+						"default": "1",
+						"enum": [
+							"1",
+							"2"
+						],
+						"description": "Version of the builder backend to use.\n\n- `1` is the first generation classic (deprecated) builder in the Docker daemon (default)\n- `2` is [BuildKit](https://github.com/moby/buildkit)\n"
 					}
 				],
 				"responses": {
@@ -8955,7 +9105,7 @@ module.exports = {
 		"/images/create": {
 			"post": {
 				"summary": "Create an image",
-				"description": "Create an image by either pulling it from a registry or importing it.",
+				"description": "Pull or import an image.",
 				"operationId": "ImageCreate",
 				"consumes": [
 					"text/plain",
@@ -9430,7 +9580,9 @@ module.exports = {
 										"type": "boolean"
 									},
 									"is_automated": {
-										"type": "boolean"
+										"description": "Whether this repository has automated builds enabled.\n\n<p><br /></p>\n\n> **Deprecated**: This field is deprecated and will always be \"false\".\n",
+										"type": "boolean",
+										"example": false
 									},
 									"name": {
 										"type": "string"
@@ -9444,25 +9596,25 @@ module.exports = {
 						"examples": {
 							"application/json": [
 								{
-									"description": "",
-									"is_official": false,
+									"description": "A minimal Docker image based on Alpine Linux with a complete package index and only 5 MB in size!",
+									"is_official": true,
 									"is_automated": false,
-									"name": "wma55/u1210sshd",
-									"star_count": 0
+									"name": "alpine",
+									"star_count": 10093
 								},
 								{
-									"description": "",
-									"is_official": false,
+									"description": "Busybox base image.",
+									"is_official": true,
 									"is_automated": false,
-									"name": "jdswinbank/sshd",
-									"star_count": 0
+									"name": "Busybox base image.",
+									"star_count": 3037
 								},
 								{
-									"description": "",
-									"is_official": false,
+									"description": "The PostgreSQL object-relational database system provides reliability and data integrity.",
+									"is_official": true,
 									"is_automated": false,
-									"name": "vgauthier/sshd",
-									"star_count": 0
+									"name": "postgres",
+									"star_count": 12408
 								}
 							]
 						}
@@ -9491,7 +9643,7 @@ module.exports = {
 					{
 						"name": "filters",
 						"in": "query",
-						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the images list. Available filters:\n\n- `is-automated=(true|false)`\n- `is-official=(true|false)`\n- `stars=<number>` Matches images that has at least 'number' stars.\n",
+						"description": "A JSON encoded value of the filters (a `map[string][]string`) to process on the images list. Available filters:\n\n- `is-official=(true|false)`\n- `stars=<number>` Matches images that has at least 'number' stars.\n",
 						"type": "string"
 					}
 				],
@@ -10009,7 +10161,6 @@ module.exports = {
 										"Created": 1466724217,
 										"Size": 1092588,
 										"SharedSize": 0,
-										"VirtualSize": 1092588,
 										"Labels": {},
 										"Containers": 1
 									}
@@ -11138,8 +11289,14 @@ module.exports = {
 							}
 						}
 					},
+					"400": {
+						"description": "bad parameter",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					},
 					"403": {
-						"description": "operation not supported for pre-defined networks",
+						"description": "Forbidden operation. This happens when trying to create a network named after a pre-defined network,\nor when trying to create an overlay network on a daemon which is not part of a Swarm cluster.\n",
 						"schema": {
 							"$ref": "#/definitions/ErrorResponse"
 						}
@@ -11175,7 +11332,7 @@ module.exports = {
 									"type": "string"
 								},
 								"CheckDuplicate": {
-									"description": "Check for networks with duplicate names. Since Network is\nprimarily keyed based on a random ID and not on the name, and\nnetwork name is strictly a user-friendly alias to the network\nwhich is uniquely identified using ID, there is no guaranteed\nway to check for duplicates. CheckDuplicate is there to provide\na best effort checking of any networks which has the same name\nbut it is not guaranteed to catch all name collisions.\n",
+									"description": "Deprecated: CheckDuplicate is now always enabled.\n",
 									"type": "boolean"
 								},
 								"Driver": {
@@ -11267,6 +11424,7 @@ module.exports = {
 		"/networks/{id}/connect": {
 			"post": {
 				"summary": "Connect a container to a network",
+				"description": "The network must be either a local-scoped network or a swarm-scoped network with the `attachable` option set. A network cannot be re-attached to a running container",
 				"operationId": "NetworkConnect",
 				"consumes": [
 					"application/json"
@@ -11275,8 +11433,14 @@ module.exports = {
 					"200": {
 						"description": "No error"
 					},
+					"400": {
+						"description": "bad parameter",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					},
 					"403": {
-						"description": "Operation not supported for swarm scoped networks",
+						"description": "Operation forbidden",
 						"schema": {
 							"$ref": "#/definitions/ErrorResponse"
 						}
@@ -11324,7 +11488,8 @@ module.exports = {
 									"IPAMConfig": {
 										"IPv4Address": "172.24.56.89",
 										"IPv6Address": "2001:db8::5689"
-									}
+									},
+									"MacAddress": "02:42:ac:12:05:02"
 								}
 							}
 						}
@@ -12670,22 +12835,7 @@ module.exports = {
 					"201": {
 						"description": "no error",
 						"schema": {
-							"type": "object",
-							"title": "ServiceCreateResponse",
-							"properties": {
-								"ID": {
-									"description": "The ID of the created service.",
-									"type": "string"
-								},
-								"Warning": {
-									"description": "Optional warning message",
-									"type": "string"
-								}
-							},
-							"example": {
-								"ID": "ak7w3gjqoa3kuz8xcpnyy0pvl",
-								"Warning": "unable to pin image doesnotexist:latest to digest: image library/doesnotexist:latest not found"
-							}
+							"$ref": "#/definitions/ServiceCreateResponse"
 						}
 					},
 					"400": {
